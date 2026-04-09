@@ -25,6 +25,17 @@
         </div>
     </div>
 
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'planning' %}" class="bg-brand-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-600 transition shadow-md flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Planning des Patrouilles
+        </a>
+        <a href="{% url 'carte_dfci' %}" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition shadow-md flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+            Carte des Massifs (DFCI)
+        </a>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex items-center gap-6">
             <div class="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center flex-shrink-0">

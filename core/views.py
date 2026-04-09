@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from django.utils import timezone
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -106,3 +107,29 @@ def intranet(request):
         'annee_en_cours': annee_en_cours,
     }
     return render(request, 'intranet.html', context)
+
+@login_required(login_url='/connexion/')
+def planning(request):
+    # On récupère les patrouilles à partir d'aujourd'hui, triées par date
+    patrouilles = Patrouille.objects.filter(date_patrouille__gte=timezone.now().date()).order_by('date_patrouille', 'heure_debut')
+    return render(request, 'planning.html', {'patrouilles': patrouilles})
+
+@login_required(login_url='/connexion/')
+def inscription_patrouille(request, patrouille_id):
+    # Cette vue ne renvoie pas de page HTML, elle fait l'action puis redirige
+    patrouille = get_object_or_404(Patrouille, id=patrouille_id)
+    
+    if request.user in patrouille.benevoles.all():
+        # Si le bénévole est déjà dedans, on le retire
+        patrouille.benevoles.remove(request.user)
+        messages.success(request, f"Vous êtes désinscrit de la patrouille du {patrouille.date_patrouille.strftime('%d/%m')}.")
+    else:
+        # Sinon on l'ajoute
+        patrouille.benevoles.add(request.user)
+        messages.success(request, f"Vous êtes inscrit à la patrouille du {patrouille.date_patrouille.strftime('%d/%m')} !")
+        
+    return redirect('planning')
+
+@login_required(login_url='/connexion/')
+def carte_dfci(request):
+    return render(request, 'carte.html')

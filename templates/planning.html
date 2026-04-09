@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Planning des Patrouilles | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-slate-200 pb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 mb-2">Planning Estival</h1>
+            <p class="text-slate-600">Inscrivez-vous sur les créneaux disponibles.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'intranet' %}" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Retour Intranet
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-8 p-4 bg-brand-50 border border-brand-200 text-brand-700 font-bold px-4 py-3 rounded-xl">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for patrouille in patrouilles %}
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span class="text-xs font-black uppercase tracking-widest text-brand-500">{{ patrouille.get_type_patrouille_display }}</span>
+                    <h3 class="text-xl font-black text-slate-900 mt-1">{{ patrouille.date_patrouille|date:"l d F" }}</h3>
+                </div>
+                <div class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full">
+                    {{ patrouille.heure_debut|time:"H:i" }} - {{ patrouille.heure_fin|time:"H:i" }}
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-sm font-bold text-slate-500 mb-2">Équipe ({{ patrouille.benevoles.count }} inscrits) :</p>
+                <div class="flex flex-wrap gap-2">
+                    {% for benevole in patrouille.benevoles.all %}
+                        <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2 py-1 rounded-md">{{ benevole.first_name|default:benevole.username }}</span>
+                    {% empty %}
+                        <span class="text-slate-400 text-xs italic">Personne n'est encore inscrit.</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <form action="{% url 'inscription_patrouille' patrouille.id %}" method="POST">
+                {% csrf_token %}
+                {% if request.user in patrouille.benevoles.all %}
+                    <button type="submit" class="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl font-bold hover:bg-red-100 transition">
+                        Se désinscrire
+                    </button>
+                {% else %}
+                    <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-brand-600 transition shadow-md">
+                        M'inscrire à cette patrouille
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12 text-slate-500 italic">Aucune patrouille planifiée pour le moment.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

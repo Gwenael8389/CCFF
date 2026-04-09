@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Carte DFCI | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 mb-2">Carte des Massifs (DFCI)</h1>
+            <p class="text-slate-600">Points d'eau, citernes et zones de surveillance.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'intranet' %}" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Retour Intranet
+            </a>
+        </div>
+    </div>
+
+    <div id="map" class="w-full h-[600px] rounded-3xl shadow-lg border border-slate-200 z-10"></div>
+
+</div>
+
+<script>
+    // 1. Initialisation de la carte (Centrée sur Besse-sur-Issole)
+    var map = L.map('map').setView([43.3486, 6.1769], 13);
+
+    // 2. Ajout du fond de carte (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // 3. Exemple de Citernes (On utilise une icône rouge pour bien les voir)
+    var citerneIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: "<div style='background-color:#3b82f6; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);'></div>",
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+
+    // Tu pourras ajouter les vraies coordonnées GPS des citernes ici
+    L.marker([43.345, 6.180], {icon: citerneIcon}).addTo(map)
+        .bindPopup('<b>Citerne n°1</b><br>Capacité: 30m3<br>Accès: Piste DFCI Sud');
+        
+    L.marker([43.355, 6.170], {icon: citerneIcon}).addTo(map)
+        .bindPopup('<b>Citerne n°2</b><br>Capacité: 120m3<br>Accès: Route du lac');
+
+    // 4. Exemple d'une zone rouge (Massif sensible)
+    var massifSensible = L.polygon([
+        [43.350, 6.160],
+        [43.355, 6.165],
+        [43.360, 6.150]
+    ], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.2
+    }).addTo(map).bindPopup("Massif de Sainte-Agathe (Haut Risque)");
+</script>
+{% endblock %}
