@@ -64,3 +64,23 @@ class MessageContact(models.Model):
 
     def __str__(self):
         return f"Message de {self.nom} - {self.sujet}"
+    
+class PhotoGalerie(models.Model):
+    titre = models.CharField(max_length=100, help_text="Ex: Formation avec le SDIS")
+    image = models.ImageField(upload_to='galerie/')
+    date_ajout = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titre
+
+class MembreEquipe(models.Model):
+    nom = models.CharField(max_length=100, help_text="Prénom et Nom")
+    role = models.CharField(max_length=100, help_text="Ex: Président, Chef d'équipe...")
+    photo = models.ImageField(upload_to='equipe/', blank=True, null=True)
+    ordre = models.IntegerField(default=0, help_text="Mettre 1 pour le président, 2 pour le vice-président, etc.")
+
+    class Meta:
+        ordering = ['ordre', 'nom'] # Permet de trier l'équipe dans l'ordre hiérarchique
+
+    def __str__(self):
+        return f"{self.nom} - {self.role}"

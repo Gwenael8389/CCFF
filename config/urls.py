@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from core.views import home, devenir_benevole, contact, mentions_legales, reglementation, missions, actualites
+from core.views import home, devenir_benevole, contact, mentions_legales, reglementation, missions, actualites, galerie
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,6 +13,7 @@ urlpatterns = [
     
     path('missions/', missions, name='missions'),
     path('actualites/', actualites, name='actualites'),
+    path('galerie/', galerie, name='galerie'),
     
     path('connexion/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('deconnexion/', auth_views.LogoutView.as_view(), name='logout'),

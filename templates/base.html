@@ -27,8 +27,9 @@
 
                 <nav class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider items-center">
                     <a href="/" class="text-brand-600">Accueil</a>
-                    <a href="/reglementation/" class="text-slate-600 hover:text-brand-600 transition">Prévention & OLD</a>
-                    <a href="/devenir-benevole/" class="text-slate-600 hover:text-brand-600 transition">Devenir Bénévole</a>
+                    <a href="{% url 'missions' %}" class="text-slate-600 hover:text-brand-600 transition">Le CCFF</a>
+                    <a href="{% url 'actualites' %}" class="text-slate-600 hover:text-brand-600 transition">Actualités</a>
+                    <a href="{% url 'galerie' %}" class="text-slate-600 hover:text-brand-600 transition">Galerie</a> <a href="/reglementation/" class="text-slate-600 hover:text-brand-600 transition">Prévention</a>
                     <a href="/contact/" class="text-slate-600 hover:text-brand-600 transition">Contact</a>
                 </nav>
 

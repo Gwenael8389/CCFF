@@ -11,21 +11,53 @@
         <p class="text-xl text-slate-600">Le Comité Communal Feux de Forêts est le premier maillon de la chaîne de sécurité civile. Il agit sous l'autorité directe du Maire.</p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-8 mb-24">
+    <div class="grid md:grid-cols-4 gap-8 mb-24">
         <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4">La Patrouille</h3>
-            <p class="text-slate-600 leading-relaxed">Nos véhicules parcourent quotidiennement les massifs forestiers de la commune aux heures les plus chaudes. Leur but : dissuader les comportements à risque, informer le public et détecter le moindre départ de fumée.</p>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Surveillance et alerte</h3>
+            <p class="text-slate-600 leading-relaxed">Les bénévoles effectuent des patrouilles en véhicule pour détecter précocement les départs de feu, alerter les autorités par radio et intervenir sur des départs de feux naissants (généralement < 100m²) si nécessaire.</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4">La Vigie</h3>
-            <p class="text-slate-600 leading-relaxed">Postés sur un point haut stratégique (Point de guet), deux bénévoles scrutent l'horizon aux jumelles. Ils sont capables de donner l'alerte instantanément par radio à la moindre anomalie.</p>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Information et sensibilisation</h3>
+            <p class="text-slate-600 leading-relaxed">Conseil à la population sur les réglementations (débroussaillement, usage du feu, accès aux massifs) et dissuasion des comportements à risque.</p>
         </div>
         <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4">Le Guidage</h3>
-            <p class="text-slate-600 leading-relaxed">En cas de sinistre avéré, le CCFF se place à des carrefours clés pour guider les camions de pompiers (SDIS) vers le lieu du feu ou le point d'eau le plus proche.</p>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Appui opérationnel et logistique</h3>
+            <p class="text-slate-600 leading-relaxed">En cas de sinistre, le CCFF assure le guidage des secours grâce à leur connaissance du terrain, participe aux évacuations, organise la circulation et fournisse un soutien logistique (eau, nourriture) aux pompiers et aux habitants.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Sécurité civile élargie</h3>
+            <p class="text-slate-600 leading-relaxed">Au sein des Réserves Communales de Sécurité Civile (RCSC), ces comités peuvent également intervenir lors d'autres catastrophes comme les inondations ou les tempêtes, en coordination avec le maire et le commandement des opérations de secours (COS).</p>
+        </div>
+    </div>
+
+    <div class="mb-24 pt-12 border-t border-slate-200">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-black text-slate-900 mb-4">L'Équipe Dirigeante</h2>
+            <p class="text-slate-600">Le bureau et les responsables de notre comité communal.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {% for membre in equipe %}
+            <div class="bg-white rounded-3xl p-6 text-center shadow-sm border border-slate-100 hover:shadow-lg transition">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4 border-brand-50 shadow-inner">
+                    {% if membre.photo %}
+                        <img src="{{ membre.photo.url }}" alt="{{ membre.nom }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 class="text-lg font-black text-slate-900">{{ membre.nom }}</h3>
+                <p class="text-brand-600 font-bold text-sm uppercase tracking-wider mt-1">{{ membre.role }}</p>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center text-slate-500 italic">L'équipe n'a pas encore été renseignée.</div>
+            {% endfor %}
         </div>
     </div>
 
