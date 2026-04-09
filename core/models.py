@@ -7,7 +7,8 @@ class Actualite(models.Model):
     image = models.ImageField(upload_to='actus/', blank=True, null=True)
     date_publication = models.DateTimeField(auto_now_add=True)
 
-    def __claire__(self):
+    # Correction ici : c'est __str__ et non __claire__
+    def __str__(self):
         return self.titre
 
 class Materiel(models.Model):
