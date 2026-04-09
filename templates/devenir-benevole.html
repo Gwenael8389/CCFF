@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenir Bénévole | CCFF Besse-sur-Issole</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+
+    <header class="bg-white p-6 shadow-sm border-b border-slate-100 text-center">
+        <a href="/" class="text-brand-600 font-bold hover:underline flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Retour à l'accueil
+        </a>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black text-slate-900 mb-4">Rejoindre la patrouille orange</h1>
+            <p class="text-lg text-slate-600">Complétez ce formulaire pour entrer en contact avec le président du CCFF. Aucune expérience préalable n'est requise, la formation est assurée par l'association.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100">
+            <form method="POST" action="{% url 'devenir_benevole' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Prénom</label>
+                        <input type="text" name="prenom" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Nom</label>
+                        <input type="text" name="nom" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Adresse Email</label>
+                        <input type="email" name="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Téléphone</label>
+                        <input type="tel" name="telephone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Pourquoi souhaitez-vous nous rejoindre ?</label>
+                    <textarea name="message" rows="4" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-400" placeholder="Décrivez brièvement vos motivations ou vos disponibilités..."></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-lg rounded-xl px-4 py-4 hover:bg-brand-600 transition duration-300 shadow-lg mt-4">
+                    Envoyer ma candidature
+                </button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
