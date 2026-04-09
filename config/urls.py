@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, 
+from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, gestion_documents,
                         missions, actualites, galerie, soutenir, intranet, planning, gestion_materiel,
                         supprimer_patrouille, inscription_patrouille, inscription_newsletter, gestion_vestiaire,
                         saisir_rapport, gestion_alerte, archives_rapports, voir_rapport, publier_contenu, traiter_demande)
@@ -37,4 +37,5 @@ urlpatterns = [
     path('intranet/publier/', publier_contenu, name='publier_contenu'),
     path('intranet/vestiaire/', gestion_vestiaire, name='gestion_vestiaire'),
     path('intranet/traiter/<str:type_demande>/<int:demande_id>/', traiter_demande, name='traiter_demande'),
+    path('intranet/documents/', gestion_documents, name='gestion_documents'),
 ]

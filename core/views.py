@@ -10,7 +10,7 @@ import calendar
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from .forms import ActualiteForm, PhotoForm
+from .forms import ActualiteForm, PhotoForm, DocumentForm
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -517,3 +517,33 @@ def traiter_demande(request, type_demande, demande_id):
     messages.success(request, message_succes)
     
     return redirect('intranet')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/intranet/')
+def gestion_documents(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        # Ajouter un document
+        if action == 'ajouter':
+            form = DocumentForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Le document a bien été classé dans la boîte à documents.")
+                return redirect('gestion_documents')
+                
+        # Supprimer un document
+        elif action == 'supprimer':
+            doc_id = request.POST.get('doc_id')
+            doc = get_object_or_404(DocumentIntranet, id=doc_id)
+            doc.delete()
+            messages.success(request, "Le document a été supprimé.")
+            return redirect('gestion_documents')
+
+    form = DocumentForm()
+    # On récupère tous les documents triés par catégorie pour l'affichage admin
+    documents = DocumentIntranet.objects.all().order_by('categorie', '-date_ajout')
+
+    return render(request, 'gestion_documents.html', {
+        'form': form,
+        'documents': documents
+    })

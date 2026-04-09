@@ -1,5 +1,5 @@
 from django import forms
-from .models import Actualite, PhotoGalerie, DossierGalerie
+from .models import Actualite, PhotoGalerie, DossierGalerie, DocumentIntranet
 
 class ActualiteForm(forms.ModelForm):
     class Meta:
@@ -25,4 +25,14 @@ class PhotoForm(forms.ModelForm):
         widgets = {
             'dossier': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 text-slate-700 font-bold'}),
             'titre': forms.TextInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 font-bold', 'placeholder': 'Légende (Optionnelle)'}),
+        }
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = DocumentIntranet
+        fields = ['titre', 'categorie', 'fichier']
+        widgets = {
+            'titre': forms.TextInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold', 'placeholder': 'Nom du document...'}),
+            'categorie': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-700'}),
+            'fichier': forms.FileInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3'}),
         }
