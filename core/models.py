@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 class Actualite(models.Model):
     titre = models.CharField(max_length=200)
@@ -109,7 +110,7 @@ class DocumentIntranet(models.Model):
         ('AUTRE', 'Autre Document'),
     ]
     titre = models.CharField(max_length=200)
-    fichier = models.FileField(upload_to='intranet_docs/')
+    fichier = models.FileField(upload_to='intranet_docs/', storage=RawMediaCloudinaryStorage())
     categorie = models.CharField(max_length=20, choices=CATEGORIES, default='AUTRE')
     date_ajout = models.DateTimeField(auto_now_add=True)
 
@@ -164,7 +165,7 @@ class Patrouille(models.Model):
     signature_coequipier = models.TextField(blank=True, null=True)
     
     # À ajouter dans la classe Patrouille
-    rapport_pdf = models.FileField(upload_to='rapports_pdf/', blank=True, null=True)
+    rapport_pdf = models.FileField(upload_to='rapports_pdf/', blank=True, null=True, storage=RawMediaCloudinaryStorage())
     
     class Meta:
         ordering = ['date_patrouille', 'heure_debut']
