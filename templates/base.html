@@ -133,6 +133,20 @@
     </header>
 
     <main class="flex-grow">
+        {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            {% for message in messages %}
+                <div class="p-4 rounded-2xl font-bold shadow-sm flex items-center gap-3 animate-pulse-slow
+                    {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200
+                    {% elif message.tags == 'info' %}bg-blue-50 text-blue-700 border border-blue-200
+                    {% else %}bg-brand-50 text-brand-700 border border-brand-200{% endif %}">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>
@@ -148,6 +162,29 @@
                 <div class="flex gap-4">
                     <div class="bg-red-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">18 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Pompiers</span></div>
                     <div class="bg-blue-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">112 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Urgences</span></div>
+                </div>
+            </div>
+
+            <div class="col-span-1 md:col-span-3 bg-slate-900 border border-slate-700 rounded-3xl p-8 mb-4 flex flex-col md:flex-row justify-between items-center gap-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-slate-800 opacity-50">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22M11 7A1 1 0 0 1 13 7V13A1 1 0 0 1 11 13V7M11 15A1 1 0 0 1 13 15V17A1 1 0 0 1 11 17V15Z" /></svg>
+                </div>
+                
+                <div class="relative z-10 flex-1">
+                    <h4 class="text-white font-black text-2xl mb-2 flex items-center gap-3">
+                        <svg class="w-7 h-7 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        Alerte Risque Noir & Newsletter
+                    </h4>
+                    <p class="text-slate-400 font-bold">Recevez un e-mail officiel en cas de fermeture totale des massifs forestiers ou d'événements majeurs sur la commune.</p>
+                </div>
+                <div class="relative z-10 flex-1 w-full max-w-md">
+                    <form action="{% url 'inscription_newsletter' %}" method="POST" class="flex flex-col sm:flex-row gap-3">
+                        {% csrf_token %}
+                        <input type="email" name="email" required placeholder="Votre adresse e-mail..." class="flex-1 bg-slate-800/80 border border-slate-600 text-white placeholder-slate-400 font-bold rounded-xl px-5 py-4 focus:ring-2 focus:ring-brand-500 outline-none transition backdrop-blur-sm">
+                        <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-black px-8 py-4 rounded-xl transition shadow-lg whitespace-nowrap">
+                            M'inscrire
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -174,7 +211,7 @@
                 <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Soutiens & Développement</h4>
                 <p class="text-sm mb-4">Le CCFF remercie la Mairie et ses partenaires pour leur soutien logistique et financier tout au long de l'année.</p>
                 <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
-                    Site web développé par <a href="#" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a>.
+                    Site web développé par <a href="https://studio4242.vercel.app/" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a>.
                 </div>
             </div>
         </div>

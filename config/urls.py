@@ -3,7 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, 
                         missions, actualites, galerie, soutenir, intranet, planning, 
-                        supprimer_patrouille, inscription_patrouille, 
+                        supprimer_patrouille, inscription_patrouille, inscription_newsletter,
                         saisir_rapport, gestion_alerte, archives_rapports, voir_rapport)
 
 urlpatterns = [
@@ -31,4 +31,5 @@ urlpatterns = [
     
     path('connexion/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('deconnexion/', auth_views.LogoutView.as_view(), name='logout'),
+    path('newsletter/inscription/', inscription_newsletter, name='inscription_newsletter'),
 ]

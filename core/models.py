@@ -166,3 +166,15 @@ class Alerte(models.Model):
 
     def __str__(self):
         return f"[{'ACTIVE' if self.est_active else 'FIN'}] {self.titre}"
+    
+class AbonneNewsletter(models.Model):
+    email = models.EmailField(unique=True, help_text="Adresse email de l'habitant")
+    date_inscription = models.DateTimeField(auto_now_add=True)
+    est_actif = models.BooleanField(default=True, help_text="Abonné aux alertes et newsletters")
+
+    class Meta:
+        verbose_name = "Abonné Newsletter"
+        verbose_name_plural = "Abonnés Newsletter"
+
+    def __str__(self):
+        return self.email

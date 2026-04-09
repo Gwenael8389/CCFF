@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import date
 from django.utils import timezone
@@ -9,6 +9,7 @@ from django.db.models import Q
 import calendar
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponseRedirect
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -312,3 +313,17 @@ def archives_rapports(request):
 def voir_rapport(request, patrouille_id):
     patrouille = get_object_or_404(Patrouille, id=patrouille_id, est_terminee=True)
     return render(request, 'voir_rapport.html', {'patrouille': patrouille})
+
+def inscription_newsletter(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            # On vérifie si la personne n'est pas déjà inscrite pour éviter les doublons
+            if AbonneNewsletter.objects.filter(email=email).exists():
+                messages.info(request, "Cette adresse e-mail est déjà inscrite à nos alertes. Merci !")
+            else:
+                AbonneNewsletter.objects.create(email=email)
+                messages.success(request, "Merci ! Vous êtes maintenant inscrit aux alertes citoyennes de Besse-sur-Issole.")
+    
+    # Redirige l'utilisateur vers la page d'où il vient (ou l'accueil par défaut)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
