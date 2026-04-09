@@ -3,7 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, 
                         missions, actualites, galerie, soutenir, intranet, planning, 
-                        supprimer_patrouille, inscription_patrouille, carte_dfci, 
+                        supprimer_patrouille, inscription_patrouille, 
                         saisir_rapport, gestion_alerte, archives_rapports, voir_rapport)
 
 urlpatterns = [
@@ -26,7 +26,6 @@ urlpatterns = [
     path('intranet/planning/', planning, name='planning'),
     path('intranet/planning/inscription/<int:patrouille_id>/', inscription_patrouille, name='inscription_patrouille'),
     path('intranet/planning/annuler/<int:patrouille_id>/', supprimer_patrouille, name='supprimer_patrouille'),
-    path('intranet/carte/', carte_dfci, name='carte_dfci'),
     path('intranet/rapport/<int:patrouille_id>/', saisir_rapport, name='saisir_rapport'),
     path('intranet/alerte/', gestion_alerte, name='gestion_alerte'),
     
