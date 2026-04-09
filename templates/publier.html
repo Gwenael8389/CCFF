@@ -52,16 +52,29 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   tinymce.init({
-    selector: '#tinymce-editor', // Cible le textarea de notre formulaire
+    selector: '#tinymce-editor',
     language: 'fr_FR',
-    plugins: 'lists link image preview textcolor colorpicker table',
-    toolbar: 'undo redo | formatselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | image link',
+    /* On ajoute 'media' et 'image' aux plugins */
+    plugins: 'lists link image media preview table',
+    /* On personnalise la barre d'outils pour qu'elle ressemble à Word */
+    toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | image media link table | forecolor backcolor',
     menubar: false,
-    height: 400,
-    content_style: "body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont; font-size: 16px; }"
+    height: 500,
+    
+    /* 🚀 LE SECRET POUR LES IMAGES : Permet le copier-coller et le glisser-déposer */
+    paste_data_images: true, 
+    
+    /* 🎨 Permet d'avoir l'onglet "Avancé" pour régler les marges des images */
+    image_advtab: true, 
+    
+    /* On s'assure que les images ne débordent pas de l'écran sur mobile */
+    content_style: `
+        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont; font-size: 16px; color: #1e293b; }
+        img { max-width: 100%; height: auto; border-radius: 8px; }
+    `
   });
 </script>
 {% endblock %}
