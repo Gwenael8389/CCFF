@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -34,3 +34,19 @@ def devenir_benevole(request):
         return redirect('home')
         
     return render(request, 'devenir-benevole.html')
+
+def contact(request):
+    if request.method == 'POST':
+        MessageContact.objects.create(
+            nom=request.POST.get('nom'),
+            email=request.POST.get('email'),
+            sujet=request.POST.get('sujet'),
+            message=request.POST.get('message')
+        )
+        messages.success(request, "Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.")
+        return redirect('contact')
+        
+    return render(request, 'contact.html')
+
+def mentions_legales(request):
+    return render(request, 'mentions-legales.html')

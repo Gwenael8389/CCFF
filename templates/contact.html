@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Contact & Urgences | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16">
+    
+    <div class="bg-red-50 border-2 border-red-500 rounded-3xl p-8 md:p-12 text-center mb-16 shadow-lg relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-2 bg-red-600"></div>
+        <h2 class="text-3xl font-black text-red-700 mb-4 uppercase tracking-widest">En cas de départ de feu</h2>
+        <p class="text-red-900 font-bold mb-8 text-lg">Ne contactez pas l'administratif. Appelez immédiatement les secours en précisant le lieu, la commune et ce qui brûle.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-red-100 flex flex-col items-center">
+                <span class="text-5xl font-black text-red-600 mb-2">18</span>
+                <span class="font-bold text-slate-800 uppercase text-sm">Sapeurs-Pompiers</span>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-red-100 flex flex-col items-center">
+                <span class="text-5xl font-black text-blue-600 mb-2">112</span>
+                <span class="font-bold text-slate-800 uppercase text-sm">Urgence Européenne</span>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-red-100 flex flex-col items-center">
+                <span class="text-5xl font-black text-slate-900 mb-2">114</span>
+                <span class="font-bold text-slate-800 uppercase text-sm">Urgence SMS / Sourds</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-black text-slate-900 mb-4">Contact Administratif</h1>
+        <p class="text-slate-600">Pour une question sur la réglementation, les OLD, ou la vie de l'association.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-8 p-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative">
+                    <strong class="font-bold">Message envoyé !</strong>
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'contact' %}" class="space-y-6">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Votre Nom</label>
+                    <input type="text" name="nom" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <input type="email" name="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Sujet de votre demande</label>
+                <input type="text" name="sujet" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Votre Message</label>
+                <textarea name="message" rows="5" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-slate-900 text-white font-bold text-lg rounded-xl px-4 py-4 hover:bg-brand-600 transition duration-300 shadow-lg mt-4">
+                Envoyer le message
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

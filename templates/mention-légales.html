@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Mentions Légales & RGPD | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-16">
+    <h1 class="text-4xl font-black text-slate-900 mb-8">Mentions Légales & Politique de Confidentialité</h1>
+    
+    <div class="prose prose-slate prose-brand max-w-none">
+        <h2 class="text-2xl font-bold mt-8 mb-4">1. Éditeur du site</h2>
+        <p>Le présent site est la propriété du <strong>Comité Communal Feux de Forêts (CCFF) de Besse-sur-Issole</strong>, association / structure rattachée à la commune de Besse-sur-Issole.<br>
+        Adresse : Place de la Mairie, 83890 Besse-sur-Issole<br>
+        Téléphone Mairie : 04 94 69 70 51<br>
+        Directeur de la publication : Le Président du CCFF / Le Maire de Besse-sur-Issole.</p>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4">2. Hébergement</h2>
+        <p>Ce site est hébergé par <strong>Vercel Inc.</strong><br>
+        340 S Lemon Ave #4133 Walnut, CA 91789, USA<br>
+        La base de données est hébergée par <strong>Neon Inc.</strong> sur des serveurs sécurisés en Europe (AWS Frankfurt).</p>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4">3. Réalisation technique</h2>
+        <p>Site web développé à titre gracieux par <a href="https://studio4242.vercel.app/" target="_blank" class="text-brand-600 hover:underline font-bold">Studio 4242</a> pour soutenir l'engagement bénévole. Le code source et le design restent la propriété de l'éditeur.</p>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4">4. Protection des données (RGPD)</h2>
+        <p>Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés :</p>
+        <ul class="list-disc pl-6 mb-4 space-y-2">
+            <li><strong>Formulaire de contact & candidature :</strong> Les données collectées (nom, email, téléphone, message) sont utilisées uniquement pour répondre à votre demande ou traiter votre candidature au sein du CCFF.</li>
+            <li><strong>Conservation :</strong> Les données sont conservées pendant la durée stricte du traitement et sont automatiquement purgées par nos administrateurs.</li>
+            <li><strong>Droits :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Vous pouvez exercer ce droit en nous contactant via le formulaire de contact du site.</li>
+            <li><strong>Cookies :</strong> Ce site n'utilise aucun cookie de traçage publicitaire. Un cookie technique strictement nécessaire peut être utilisé pour le fonctionnement de l'espace administrateur/bénévole (sessions Django).</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
