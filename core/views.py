@@ -33,4 +33,4 @@ def devenir_benevole(request):
         messages.success(request, "Votre candidature a bien été envoyée ! Nous vous recontacterons vite.")
         return redirect('home')
         
-    return render(request, 'benevole.html')
+    return render(request, 'devenir-benevole.html')
