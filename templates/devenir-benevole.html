@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devenir Bénévole | CCFF Besse-sur-Issole</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+{% extends "base.html" %}
 
-    <header class="bg-white p-6 shadow-sm border-b border-slate-100 text-center">
-        <a href="/" class="text-brand-600 font-bold hover:underline flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Retour à l'accueil
-        </a>
-    </header>
+{% block title %}Devenir Bénévole | CCFF Besse-sur-Issole{% endblock %}
 
-    <main class="max-w-3xl mx-auto px-4 py-16">
+{% block content %}
+    <div class="max-w-3xl mx-auto px-4 py-16">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-8 p-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative" role="alert">
+                    <strong class="font-bold">Succès !</strong>
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="text-center mb-12">
             <h1 class="text-4xl font-black text-slate-900 mb-4">Rejoindre la patrouille orange</h1>
             <p class="text-lg text-slate-600">Complétez ce formulaire pour entrer en contact avec le président du CCFF. Aucune expérience préalable n'est requise, la formation est assurée par l'association.</p>
@@ -57,7 +54,5 @@
                 </button>
             </form>
         </div>
-    </main>
-
-</body>
-</html>
+    </div>
+{% endblock %}

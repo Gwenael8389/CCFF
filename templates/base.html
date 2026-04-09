@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CCFF Besse-sur-Issole{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { brand: { 50: '#fff7ed', 100: '#ffedd5', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 900: '#7c2d12', } } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-brand-500 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg">CCFF</div>
+                    <div class="hidden sm:block">
+                        <span class="font-black text-xl tracking-tight text-slate-900 block leading-none">BESSE-SUR-ISSOLE</span>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Feux de Forêts</span>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider items-center">
+                    <a href="#" class="text-brand-600">Accueil</a>
+                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Le CCFF</a>
+                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Prévention & OLD</a>
+                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Contact</a>
+                </nav>
+
+                <div class="hidden lg:block">
+                    <a href="#" class="bg-slate-900 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                        Espace Bénévole
+                    </a>
+                </div>
+
+                <button class="lg:hidden p-2 text-slate-900">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-16 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+            
+            <div class="col-span-1 md:col-span-3 bg-slate-800/50 rounded-2xl p-8 mb-4 border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-1">En cas d'urgence ou de départ de feu</h4>
+                    <p class="text-sm">Donnez votre position exacte et la direction de la fumée.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-red-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">18 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Pompiers</span></div>
+                    <div class="bg-blue-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">112 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Urgences</span></div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">CCFF Besse-sur-Issole</h4>
+                <ul class="space-y-3 text-sm">
+                    <li>📍 Mairie de Besse-sur-Issole<br>Place de la Mairie, 83890</li>
+                    <li>📞 Téléphone Mairie : 04 94 69 70 51</li>
+                    <li>✉️ <a href="mailto:contact@ccff-besse.fr" class="hover:text-white transition">contact@ccff-besse.fr</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Liens Utiles</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-white transition">La Mairie de Besse-sur-Issole</a></li>
+                    <li><a href="#" class="hover:text-white transition">Préfecture du Var (Arrêtés)</a></li>
+                    <li><a href="#" class="hover:text-white transition">SDIS 83 (Pompiers du Var)</a></li>
+                    <li><a href="#" class="hover:text-white transition">Mentions Légales & RGPD</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Soutiens & Développement</h4>
+                <p class="text-sm mb-4">Le CCFF remercie la Mairie et ses partenaires pour leur soutien logistique et financier tout au long de l'année.</p>
+                <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
+                    Site web développé à titre gracieux par <a href="https://studio4242.vercel.app/" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a> pour soutenir l'engagement bénévole.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

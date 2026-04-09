@@ -1,281 +1,174 @@
-<!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCFF Besse-sur-Issole | Comité Communal Feux de Forêts</title>
-    <meta name="description" content="Site officiel du CCFF de Besse-sur-Issole. Prévention, surveillance et sauvegarde de notre patrimoine forestier.">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            500: '#f97316', // Orange CCFF
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            900: '#7c2d12',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased flex flex-col min-h-screen">
+{% extends "base.html" %}
 
-    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 bg-brand-500 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg">CCFF</div>
-                    <div class="hidden sm:block">
-                        <span class="font-black text-xl tracking-tight text-slate-900 block leading-none">BESSE-SUR-ISSOLE</span>
-                        <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Feux de Forêts</span>
-                    </div>
-                </a>
+{% block title %}Accueil | CCFF Besse-sur-Issole{% endblock %}
 
-                <nav class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider items-center">
-                    <a href="#" class="text-brand-600">Accueil</a>
-                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Le CCFF</a>
-                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Prévention & OLD</a>
-                    <a href="#" class="text-slate-600 hover:text-brand-600 transition">Contact</a>
-                </nav>
-
-                <div class="hidden lg:block">
-                    <a href="#" class="bg-slate-900 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg text-sm flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
-                        Espace Bénévole
-                    </a>
-                </div>
-
-                <button class="lg:hidden p-2 text-slate-900">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
+{% block content %}
+    <section class="relative bg-slate-900 pt-24 pb-32 lg:pt-32 lg:pb-40 overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1590418386187-57321e3f81eb?q=80&w=2000&auto=format&fit=crop" alt="Forêt Var" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-block bg-brand-500 text-white text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">Réserve Communale de Sécurité Civile</span>
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Protéger, Alerter, Sauvegarder.</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">Les bénévoles du CCFF de Besse-sur-Issole veillent sur notre patrimoine forestier et accompagnent les habitants dans la prévention des risques.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition">Réglementation (OLD)</a>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="flex-grow">
-        
-        <section class="relative bg-slate-900 pt-24 pb-32 lg:pt-32 lg:pb-40 overflow-hidden">
-            <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1590418386187-57321e3f81eb?q=80&w=2000&auto=format&fit=crop" alt="Forêt Var" class="w-full h-full object-cover opacity-30">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 flex flex-col md:flex-row">
+            <div class="{{ risque_actuel.style_couleur }} p-8 md:w-1/3 flex flex-col justify-center items-center text-center transition-colors duration-500">
+                <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span class="text-sm font-bold uppercase tracking-widest opacity-80 mb-1">Risque du Jour</span>
+                <span class="text-3xl font-black">
+                    {% if risque_actuel %}{{ risque_actuel.niveau }}{% else %}INCONNU{% endif %}
+                </span>
             </div>
-            
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <span class="inline-block bg-brand-500 text-white text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">Réserve Communale de Sécurité Civile</span>
-                <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Protéger, Alerter, Sauvegarder.</h1>
-                <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">Les bénévoles du CCFF de Besse-sur-Issole veillent sur notre patrimoine forestier et accompagnent les habitants dans la prévention des risques.</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition">Réglementation (OLD)</a>
-                </div>
+            <div class="p-8 md:w-2/3 flex flex-col justify-center">
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Conditions d'accès aux massifs</h3>
+                <p class="text-slate-600 mb-4">L'accès aux massifs forestiers, la circulation et le stationnement de véhicules sont réglementés selon la couleur du jour. Restez prudents.</p>
+                <a href="https://www.risque-prevention-incendie.fr/var/" target="_blank" class="text-brand-600 font-bold text-sm hover:underline flex items-center gap-1">
+                    Consulter la carte officielle de la préfecture <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 flex flex-col md:flex-row">
-                <div class="{{ risque_actuel.style_couleur }} p-8 md:w-1/3 flex flex-col justify-center items-center text-center transition-colors duration-500">
-                    <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    <span class="text-sm font-bold uppercase tracking-widest opacity-80 mb-1">Risque du Jour</span>
-                    <span class="text-3xl font-black">
-                        {% if risque_actuel %}{{ risque_actuel.niveau }}{% else %}INCONNU{% endif %}
-                    </span>
-                </div>
-                <div class="p-8 md:w-2/3 flex flex-col justify-center">
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Conditions d'accès aux massifs</h3>
-                    <p class="text-slate-600 mb-4">L'accès aux massifs forestiers, la circulation et le stationnement de véhicules sont réglementés selon la couleur du jour. Restez prudents.</p>
-                    <a href="https://www.risque-prevention-incendie.fr/var/" target="_blank" class="text-brand-600 font-bold text-sm hover:underline flex items-center gap-1">
-                        Consulter la carte officielle de la préfecture <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-24 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-slate-900 rounded-3xl p-8 md:p-16 overflow-hidden relative">
-                    <div class="absolute top-0 right-0 -mt-16 -mr-16 text-brand-500 opacity-10">
-                        <svg class="w-96 h-96" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16zm-1-5h2v2h-2v-2zm2-1.645V14h-2v-1.5a1 1 0 011-1 1.5 1.5 0 10-1.471-1.794l-1.962-.393A3.501 3.501 0 1113 13.355z"/></svg>
-                    </div>
-                    
-                    <div class="relative z-10 md:w-2/3">
-                        <h2 class="text-3xl md:text-4xl font-black text-white mb-4">Prêt à enfiler la tenue orange ?</h2>
-                        <p class="text-lg text-slate-300 mb-8">Le CCFF recrute de nouveaux bénévoles toute l'année. Formation assurée, ambiance conviviale et esprit de camaraderie garantis.</p>
-                        
-                        <ul class="space-y-4 mb-8">
-                            <li class="flex items-center gap-3 text-white">
-                                <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Avoir au moins 16 ans (avec autorisation parentale pour les mineurs).
-                            </li>
-                            <li class="flex items-center gap-3 text-white">
-                                <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Habiter à Besse-sur-Issole ou dans une commune limitrophe.
-                            </li>
-                            <li class="flex items-center gap-3 text-white">
-                                <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Le permis B n'est pas obligatoire pour être patrouilleur.
-                            </li>
-                        </ul>
-                        
-                        <a href="/devenir-benevole/" class="inline-block bg-brand-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-600 transition shadow-lg">Soumettre ma candidature</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-24 bg-slate-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-black text-slate-900 mb-4">Nos Missions sur le Terrain</h2>
-                    <p class="text-slate-600 max-w-2xl mx-auto">Le CCFF agit sous l'autorité du Maire. Composé de bénévoles formés, il est le premier maillon de la chaîne de sécurité civile communale.</p>
-                </div>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
-                        <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Prévention & Surveillance</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed">Patrouilles régulières dans les massifs (vigie et mobile) pour détecter rapidement les départs de feux et informer les promeneurs des risques.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
-                        <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Intervention & Guidage</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed">En cas de sinistre, le CCFF guide les secours extérieurs (Pompiers) grâce à sa connaissance parfaite des pistes et citernes de la commune.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
-                        <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Appui Logistique</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed">Aide aux populations lors d'événements exceptionnels (inondations, neige, canicule) et logistique lors de gros incendies.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-24 bg-white relative overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="bg-slate-50 rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-12 items-center">
-                    <div class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 relative">
-                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop" alt="Président CCFF" class="w-full h-full object-cover rounded-2xl shadow-lg">
-                        <div class="absolute inset-0 rounded-2xl ring-4 ring-brand-500/20"></div>
-                    </div>
-                    <div>
-                        <svg class="w-12 h-12 text-brand-500 mb-6 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                        <h2 class="text-2xl font-black text-slate-900 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</h2>
-                        <p class="text-slate-600 mb-6 leading-relaxed">Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.</p>
-                        <div>
-                            <div class="font-bold text-slate-900">François Vincennes</div>
-                            <div class="text-brand-600 text-sm font-bold uppercase tracking-widest">Président du CCFF de Besse</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-24 bg-slate-50 border-t border-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-end mb-12">
-                    <div>
-                        <h2 class="text-3xl font-black text-slate-900 mb-2">Vie de l'Association</h2>
-                        <p class="text-slate-600">Retrouvez nos dernières interventions et événements.</p>
-                    </div>
-                    <a href="#" class="hidden sm:inline-flex items-center gap-2 text-brand-600 font-bold hover:text-brand-700 transition">
-                        Toutes les actus <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </a>
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-900 rounded-3xl p-8 md:p-16 overflow-hidden relative">
+                <div class="absolute top-0 right-0 -mt-16 -mr-16 text-brand-500 opacity-10">
+                    <svg class="w-96 h-96" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16zm-1-5h2v2h-2v-2zm2-1.645V14h-2v-1.5a1 1 0 011-1 1.5 1.5 0 10-1.471-1.794l-1.962-.393A3.501 3.501 0 1113 13.355z"/></svg>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8">
-                    {% for actu in actus %}
-                    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
-                        <div class="p-6">
-                            <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{{ actu.date_publication|date:"d M Y" }}</div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2">{{ actu.titre }}</h3>
-                            <p class="text-slate-600 text-sm line-clamp-3">{{ actu.contenu }}</p>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p class="text-slate-500 italic">Aucune actualité pour le moment.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-brand-600 py-16">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-brand-500/50">
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2">{{ nb_benevoles }}</div>
-                        <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Bénévoles Actifs</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2">1200</div> <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Heures de Patrouille</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2">{{ nb_vehicules }}</div>
-                        <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Véhicules 4x4</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2">24/7</div>
-                        <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Disponibilité l'été</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-slate-900 text-slate-400 py-16 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
-            
-            <div class="col-span-1 md:col-span-3 bg-slate-800/50 rounded-2xl p-8 mb-4 border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-1">En cas d'urgence ou de départ de feu</h4>
-                    <p class="text-sm">Donnez votre position exacte et la direction de la fumée.</p>
-                </div>
-                <div class="flex gap-4">
-                    <div class="bg-red-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">18 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Pompiers</span></div>
-                    <div class="bg-blue-600 text-white px-6 py-3 rounded-xl font-black text-2xl shadow-lg">112 <span class="text-sm font-normal block opacity-80 uppercase tracking-widest">Urgences</span></div>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">CCFF Besse-sur-Issole</h4>
-                <ul class="space-y-3 text-sm">
-                    <li>📍 Mairie de Besse-sur-Issole<br>Place de la Mairie, 83890</li>
-                    <li>📞 Téléphone Mairie : 04 94 69 70 51</li>
-                    <li>✉️ <a href="mailto:contact@ccff-besse.fr" class="hover:text-white transition">contact@ccff-besse.fr</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Liens Utiles</h4>
-                <ul class="space-y-3 text-sm">
-                    <li><a href="#" class="hover:text-white transition">La Mairie de Besse-sur-Issole</a></li>
-                    <li><a href="#" class="hover:text-white transition">Préfecture du Var (Arrêtés)</a></li>
-                    <li><a href="#" class="hover:text-white transition">SDIS 83 (Pompiers du Var)</a></li>
-                    <li><a href="#" class="hover:text-white transition">Mentions Légales & RGPD</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Soutiens & Développement</h4>
-                <p class="text-sm mb-4">Le CCFF remercie la Mairie et ses partenaires pour leur soutien logistique et financier tout au long de l'année.</p>
-                <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
-                    Site web développé à titre gracieux par <a href="https://studio4242.vercel.app/" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a> pour soutenir l'engagement bénévole.
+                <div class="relative z-10 md:w-2/3">
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-4">Prêt à enfiler la tenue orange ?</h2>
+                    <p class="text-lg text-slate-300 mb-8">Le CCFF recrute de nouveaux bénévoles toute l'année. Formation assurée, ambiance conviviale et esprit de camaraderie garantis.</p>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-white">
+                            <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Avoir au moins 16 ans (avec autorisation parentale pour les mineurs).
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Habiter à Besse-sur-Issole ou dans une commune limitrophe.
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Le permis B n'est pas obligatoire pour être patrouilleur.
+                        </li>
+                    </ul>
+                    
+                    <a href="/devenir-benevole/" class="inline-block bg-brand-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-600 transition shadow-lg">Soumettre ma candidature</a>
                 </div>
             </div>
         </div>
-    </footer>
+    </section>
 
-</body>
-</html>
+    <section class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">Nos Missions sur le Terrain</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">Le CCFF agit sous l'autorité du Maire. Composé de bénévoles formés, il est le premier maillon de la chaîne de sécurité civile communale.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Prévention & Surveillance</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Patrouilles régulières dans les massifs (vigie et mobile) pour détecter rapidement les départs de feux et informer les promeneurs des risques.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Intervention & Guidage</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">En cas de sinistre, le CCFF guide les secours extérieurs (Pompiers) grâce à sa connaissance parfaite des pistes et citernes de la commune.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Appui Logistique</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Aide aux populations lors d'événements exceptionnels (inondations, neige, canicule) et logistique lors de gros incendies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-slate-50 rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-12 items-center">
+                <div class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop" alt="Président CCFF" class="w-full h-full object-cover rounded-2xl shadow-lg">
+                    <div class="absolute inset-0 rounded-2xl ring-4 ring-brand-500/20"></div>
+                </div>
+                <div>
+                    <svg class="w-12 h-12 text-brand-500 mb-6 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    <h2 class="text-2xl font-black text-slate-900 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</h2>
+                    <p class="text-slate-600 mb-6 leading-relaxed">Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.</p>
+                    <div>
+                        <div class="font-bold text-slate-900">François Vincennes</div>
+                        <div class="text-brand-600 text-sm font-bold uppercase tracking-widest">Président du CCFF de Besse</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-slate-50 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-2">Vie de l'Association</h2>
+                    <p class="text-slate-600">Retrouvez nos dernières interventions et événements.</p>
+                </div>
+                <a href="#" class="hidden sm:inline-flex items-center gap-2 text-brand-600 font-bold hover:text-brand-700 transition">
+                    Toutes les actus <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for actu in actus %}
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
+                    <div class="p-6">
+                        <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{{ actu.date_publication|date:"d M Y" }}</div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">{{ actu.titre }}</h3>
+                        <p class="text-slate-600 text-sm line-clamp-3">{{ actu.contenu }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-slate-500 italic">Aucune actualité pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-brand-600 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-brand-500/50">
+                <div>
+                    <div class="text-4xl font-black text-white mb-2">{{ nb_benevoles }}</div>
+                    <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Bénévoles Actifs</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-white mb-2">1200</div> <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Heures de Patrouille</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-white mb-2">{{ nb_vehicules }}</div>
+                    <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Véhicules 4x4</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-white mb-2">24/7</div>
+                    <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Disponibilité l'été</div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
