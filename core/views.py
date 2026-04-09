@@ -10,6 +10,7 @@ import calendar
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponseRedirect
+from .forms import ActualiteForm, PhotoForm
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -390,3 +391,31 @@ def gestion_materiel(request):
         'incidents_en_cours': incidents_en_cours,
         'incidents_resolus': incidents_resolus
     })
+
+@login_required(login_url='/connexion/')
+def publier_contenu(request):
+    if not request.user.is_staff:
+        messages.error(request, "Accès réservé au bureau.")
+        return redirect('intranet')
+
+    form_actu = ActualiteForm()
+    form_photo = PhotoForm()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'actualite':
+            form_actu = ActualiteForm(request.POST, request.FILES)
+            if form_actu.is_valid():
+                form_actu.save()
+                messages.success(request, "Actualité publiée !")
+                return redirect('actualites')
+                
+        elif action == 'photo':
+            form_photo = PhotoForm(request.POST, request.FILES)
+            if form_photo.is_valid():
+                form_photo.save()
+                messages.success(request, "Photo ajoutée à la galerie !")
+                return redirect('galerie')
+
+    return render(request, 'publier.html', {'form_actu': form_actu, 'form_photo': form_photo})

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Publier | CCFF{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex justify-between items-center mb-10">
+        <h1 class="text-3xl font-black text-slate-900">Espace Publication</h1>
+        <a href="{% url 'intranet' %}" class="text-slate-500 font-bold hover:underline">← Retour</a>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12">
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl">
+            <h2 class="text-xl font-black text-brand-600 mb-6">Nouvelle Actualité</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="actualite">
+                {{ form_actu.as_p }}
+                <button type="submit" class="w-full bg-brand-500 text-white font-black py-4 rounded-xl shadow-lg">Publier l'article</button>
+            </form>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-8 shadow-xl text-white">
+            <h2 class="text-xl font-black text-blue-400 mb-6">Ajouter à la Galerie</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="photo">
+                {{ form_photo.as_p }}
+                <button type="submit" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg">Ajouter la photo</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
