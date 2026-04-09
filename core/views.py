@@ -50,3 +50,6 @@ def contact(request):
 
 def mentions_legales(request):
     return render(request, 'mention-legales.html')
+
+def reglementation(request):
+    return render(request, 'reglementation.html')
