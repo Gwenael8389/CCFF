@@ -208,3 +208,43 @@ class SignalementMateriel(models.Model):
     def __str__(self):
         statut = "RÉSOLU" if self.est_resolu else "EN COURS"
         return f"[{statut}] {self.materiel.nom} - {self.date_signalement.strftime('%d/%m/%Y')}"
+    
+class ArticleEPI(models.Model):
+    CATEGORIES = [
+        ('VETEMENT', 'Vêtement (Veste, Pantalon, Polo)'),
+        ('CHAUSSURE', 'Chaussures / Rangers'),
+        ('EPI', 'Équipement (Casque, Gants, Lampe)'),
+    ]
+    nom = models.CharField(max_length=100, help_text="Ex: Veste F1, Pantalon, Rangers...")
+    categorie = models.CharField(max_length=20, choices=CATEGORIES, default='VETEMENT')
+    prix_indicatif = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True, help_text="Pour estimer la valeur du vestiaire")
+
+    class Meta:
+        verbose_name = "Article EPI"
+        verbose_name_plural = "Articles EPI"
+        ordering = ['categorie', 'nom']
+
+    def __str__(self):
+        return self.nom
+
+class Dotation(models.Model):
+    ETAT_CHOICES = [
+        ('NEUF', 'Neuf'),
+        ('BON', 'Bon état'),
+        ('USE', 'Usé / À remplacer'),
+    ]
+    benevole = models.ForeignKey(User, on_delete=models.CASCADE, related_name='dotations')
+    article = models.ForeignKey(ArticleEPI, on_delete=models.CASCADE)
+    taille = models.CharField(max_length=20, help_text="Ex: M, XL, 42, 44...")
+    date_remise = models.DateField(auto_now_add=True)
+    etat_actuel = models.CharField(max_length=10, choices=ETAT_CHOICES, default='NEUF')
+    est_rendu = models.BooleanField(default=False, help_text="Cocher quand le bénévole rend le matériel")
+
+    class Meta:
+        verbose_name = "Dotation Bénévole"
+        verbose_name_plural = "Dotations Bénévoles"
+        ordering = ['benevole__first_name', '-date_remise']
+
+    def __str__(self):
+        statut = "RENDU" if self.est_rendu else "EN POSSESSION"
+        return f"[{statut}] {self.article.nom} ({self.taille}) - {self.benevole.username}"

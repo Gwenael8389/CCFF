@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, DossierGalerie, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, Dotation, DossierGalerie, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import date, datetime, timedelta
 from django.utils import timezone
@@ -429,3 +429,57 @@ def publier_contenu(request):
                 return redirect('galerie')
 
     return render(request, 'publier.html', {'form_actu': form_actu, 'form_photo': form_photo})
+
+@login_required(login_url='/connexion/')
+def gestion_vestiaire(request):
+    # Seul le staff (bureau/président) peut gérer le vestiaire
+    if not request.user.is_staff:
+        messages.error(request, "Accès refusé. Réservé à la logistique et au bureau.")
+        return redirect('intranet')
+
+    # Si on soumet une nouvelle dotation
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'attribuer':
+            benevole_id = request.POST.get('benevole')
+            article_id = request.POST.get('article')
+            taille = request.POST.get('taille')
+            etat = request.POST.get('etat')
+            
+            benevole = get_object_or_404(User, id=benevole_id)
+            article = get_object_or_404(ArticleEPI, id=article_id)
+            
+            Dotation.objects.create(
+                benevole=benevole,
+                article=article,
+                taille=taille,
+                etat_actuel=etat
+            )
+            messages.success(request, f"{article.nom} attribué à {benevole.first_name} avec succès.")
+            
+        elif action == 'rendre':
+            dotation_id = request.POST.get('dotation_id')
+            dotation = get_object_or_404(Dotation, id=dotation_id)
+            dotation.est_rendu = True
+            dotation.save()
+            messages.success(request, f"L'article {dotation.article.nom} a bien été retourné au stock.")
+            
+        return redirect('gestion_vestiaire')
+
+    # Récupération des données pour l'affichage
+    benevoles = User.objects.filter(is_active=True).order_by('first_name')
+    articles = ArticleEPI.objects.all()
+    
+    # Toutes les dotations non rendues (ce qui est actuellement dans la nature)
+    dotations_en_cours = Dotation.objects.filter(est_rendu=False).select_related('benevole', 'article')
+    
+    # Dotations qui nécessitent un remplacement
+    a_remplacer = dotations_en_cours.filter(etat_actuel='USE')
+
+    return render(request, 'vestiaire.html', {
+        'benevoles': benevoles,
+        'articles': articles,
+        'dotations_en_cours': dotations_en_cours,
+        'a_remplacer': a_remplacer,
+    })
