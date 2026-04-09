@@ -11,7 +11,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('devenir-benevole/', devenir_benevole, name='devenir_benevole'),
     path('contact/', contact, name='contact'),
-    path('mentions-legales/', mentions_legales, name='mentions_legales'),
+    path('mention-legales/', mentions_legales, name='mentions_legales'),
     path('reglementation/', reglementation, name='reglementation'),
     path('soutenir/', soutenir, name='soutenir'),
     
