@@ -53,3 +53,18 @@ def mentions_legales(request):
 
 def reglementation(request):
     return render(request, 'reglementation.html')
+
+def missions(request):
+    vehicules = Materiel.objects.filter(categorie='VEHICULE', en_service=True)
+    radios = Materiel.objects.filter(categorie='RADIO', en_service=True)
+    outils = Materiel.objects.filter(categorie='OUTIL', en_service=True)
+    
+    return render(request, 'missions.html', {
+        'vehicules': vehicules,
+        'radios': radios,
+        'outils': outils
+    })
+
+def actualites(request):
+    toutes_les_actus = Actualite.objects.all().order_by('-date_publication')
+    return render(request, 'actualites.html', {'actus': toutes_les_actus})

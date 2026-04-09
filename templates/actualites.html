@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Actualités & Vie de l'Association | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-black text-slate-900 mb-4">Le journal de bord du CCFF</h1>
+        <p class="text-lg text-slate-600">Interventions, formations, vie associative : suivez notre actualité.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for actu in actus %}
+        <article class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300 flex flex-col h-full">
+            {% if actu.image %}
+                <div class="h-56 overflow-hidden">
+                    <img src="{{ actu.image.url }}" alt="{{ actu.titre }}" class="w-full h-full object-cover">
+                </div>
+            {% else %}
+                <div class="h-56 bg-brand-50 border-b border-brand-100 flex items-center justify-center text-brand-300">
+                    <svg class="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
+                </div>
+            {% endif %}
+            
+            <div class="p-8 flex flex-col flex-grow">
+                <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-3">{{ actu.date_publication|date:"l d F Y" }}</div>
+                <h2 class="text-xl font-black text-slate-900 mb-4">{{ actu.titre }}</h2>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">{{ actu.contenu|linebreaksbr }}</p>
+            </div>
+        </article>
+        {% empty %}
+        <div class="col-span-3 text-center py-12">
+            <p class="text-slate-500 text-lg italic">Aucune actualité publiée pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

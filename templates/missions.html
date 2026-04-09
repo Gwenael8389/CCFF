@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Nos Missions & Équipements | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="text-center mb-16 max-w-3xl mx-auto">
+        <span class="inline-block bg-brand-500 text-white text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">Le C.C.F.F</span>
+        <h1 class="text-4xl font-black text-slate-900 mb-6">Nos missions sur le terrain</h1>
+        <p class="text-xl text-slate-600">Le Comité Communal Feux de Forêts est le premier maillon de la chaîne de sécurité civile. Il agit sous l'autorité directe du Maire.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-24">
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">La Patrouille</h3>
+            <p class="text-slate-600 leading-relaxed">Nos véhicules parcourent quotidiennement les massifs forestiers de la commune aux heures les plus chaudes. Leur but : dissuader les comportements à risque, informer le public et détecter le moindre départ de fumée.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">La Vigie</h3>
+            <p class="text-slate-600 leading-relaxed">Postés sur un point haut stratégique (Point de guet), deux bénévoles scrutent l'horizon aux jumelles. Ils sont capables de donner l'alerte instantanément par radio à la moindre anomalie.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-brand-500"></div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Le Guidage</h3>
+            <p class="text-slate-600 leading-relaxed">En cas de sinistre avéré, le CCFF se place à des carrefours clés pour guider les camions de pompiers (SDIS) vers le lieu du feu ou le point d'eau le plus proche.</p>
+        </div>
+    </div>
+
+    <div class="bg-slate-900 rounded-3xl p-8 md:p-16">
+        <h2 class="text-3xl font-black text-white mb-2 text-center">Nos Équipements</h2>
+        <p class="text-slate-400 text-center mb-12">Le matériel mis à disposition par la mairie pour nos interventions.</p>
+
+        <h3 class="text-xl font-bold text-brand-500 mb-6 uppercase tracking-widest border-b border-slate-700 pb-2">Véhicules Porteurs d'Eau</h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {% for vehicule in vehicules %}
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-brand-600/20 text-brand-500 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    </div>
+                    <div class="text-white font-bold">{{ vehicule.nom }}</div>
+                </div>
+            {% empty %}
+                <div class="text-slate-500 italic">Aucun véhicule enregistré.</div>
+            {% endfor %}
+        </div>
+
+        <h3 class="text-xl font-bold text-brand-500 mb-6 uppercase tracking-widest border-b border-slate-700 pb-2">Communications & Outils</h3>
+        <div class="flex flex-wrap gap-4">
+            {% for radio in radios %}
+                <span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg border border-slate-700 text-sm font-bold">{{ radio.nom }}</span>
+            {% endfor %}
+            {% for outil in outils %}
+                <span class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg border border-slate-700 text-sm font-bold">{{ outil.nom }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
