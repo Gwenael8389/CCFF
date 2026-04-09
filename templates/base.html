@@ -29,12 +29,14 @@
                     <a href="/" class="text-brand-600">Accueil</a>
                     <a href="{% url 'missions' %}" class="text-slate-600 hover:text-brand-600 transition">Le CCFF</a>
                     <a href="{% url 'actualites' %}" class="text-slate-600 hover:text-brand-600 transition">Actualités</a>
-                    <a href="{% url 'galerie' %}" class="text-slate-600 hover:text-brand-600 transition">Galerie</a> <a href="/reglementation/" class="text-slate-600 hover:text-brand-600 transition">Prévention</a>
-                    <a href="/contact/" class="text-slate-600 hover:text-brand-600 transition">Contact</a>
+                    <a href="{% url 'galerie' %}" class="text-slate-600 hover:text-brand-600 transition">Galerie</a>
+                    <a href="/reglementation/" class="text-slate-600 hover:text-brand-600 transition">Prévention</a>
+                    <a href="{% url 'soutenir' %}" class="text-brand-500 hover:text-brand-700 transition">Soutenir</a>
                 </nav>
 
                 <div class="hidden lg:flex items-center gap-4">
                     {% if user.is_authenticated %}
+                        <a href="{% url 'intranet' %}" class="text-slate-900 font-bold text-sm hover:text-brand-600">Mon Intranet</a>
                         <span class="text-sm font-bold text-slate-500 hidden xl:block">Bonjour, {{ user.username }}</span>
                         {% if user.is_staff %}
                             <a href="/admin/" class="text-brand-600 font-bold text-sm hover:underline">Admin</a>

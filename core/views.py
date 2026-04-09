@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -74,3 +75,11 @@ def actualites(request):
 def galerie(request):
     photos = PhotoGalerie.objects.all().order_by('-date_ajout')
     return render(request, 'galerie.html', {'photos': photos})
+
+def soutenir(request):
+    return render(request, 'soutenir.html')
+
+@login_required(login_url='/connexion/')
+def intranet(request):
+    documents = DocumentIntranet.objects.all().order_by('-date_ajout')
+    return render(request, 'intranet.html', {'documents': documents})

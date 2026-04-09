@@ -80,7 +80,22 @@ class MembreEquipe(models.Model):
     ordre = models.IntegerField(default=0, help_text="Mettre 1 pour le président, 2 pour le vice-président, etc.")
 
     class Meta:
-        ordering = ['ordre', 'nom'] # Permet de trier l'équipe dans l'ordre hiérarchique
+        ordering = ['ordre', 'nom']
 
     def __str__(self):
         return f"{self.nom} - {self.role}"
+
+class DocumentIntranet(models.Model):
+    CATEGORIES = [
+        ('FORMATION', 'Manuel & Formation'),
+        ('PLAN', 'Plan de Patrouille & Cartes'),
+        ('CR', 'Compte-Rendu de Réunion'),
+        ('AUTRE', 'Autre Document'),
+    ]
+    titre = models.CharField(max_length=200)
+    fichier = models.FileField(upload_to='intranet_docs/')
+    categorie = models.CharField(max_length=20, choices=CATEGORIES, default='AUTRE')
+    date_ajout = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"[{self.get_categorie_display()}] {self.titre}"

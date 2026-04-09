@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Soutenir le CCFF | CCFF Besse-sur-Issole{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-16 max-w-3xl mx-auto">
+        <h1 class="text-4xl font-black text-slate-900 mb-6">Soutenir notre action</h1>
+        <p class="text-xl text-slate-600">Le CCFF de Besse-sur-Issole est animé par des bénévoles. Votre soutien logistique ou financier nous aide à mieux protéger notre commune.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-16">
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-6 opacity-10 text-brand-500">
+                <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Faire un don</h3>
+            <p class="text-slate-600 mb-6">Reconnue d'intérêt général, notre association (l'Amicale du CCFF) peut recevoir des dons. <strong>Ils sont déductibles de vos impôts à hauteur de 66%.</strong> Un don de 100€ ne vous coûte en réalité que 34€.</p>
+            <p class="text-sm text-slate-500 mb-8 italic">Cet argent finance les tenues des nouveaux bénévoles, le petit matériel d'intervention et l'eau pour les patrouilles.</p>
+            <a href="/contact/" class="inline-block bg-brand-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-600 transition shadow-md">Nous contacter pour un don</a>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-6 opacity-10 text-brand-500">
+                <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mb-4">Mécénat & Matériel</h3>
+            <p class="text-slate-600 mb-6">Vous êtes une entreprise locale ou un particulier et souhaitez nous soutenir autrement ? Nous acceptons également le mécénat de compétences ou le don/prêt de matériel (outils forestiers, pompes, radios, aménagement de véhicules).</p>
+            <a href="/contact/" class="inline-block bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition shadow-md">Proposer du matériel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
