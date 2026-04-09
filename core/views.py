@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, User
 from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.utils import timezone
+from django.db.models import Q
+
+
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -86,17 +89,12 @@ def intranet(request):
     user = request.user
     annee_en_cours = date.today().year
 
-    # 1. Stats personnelles du bénévole
-    mes_patrouilles = user.patrouilles.filter(date_patrouille__year=annee_en_cours)
+    # Mise à jour : on cherche les patrouilles où l'utilisateur est soit Chef, soit Coéquipier
+    mes_patrouilles = Patrouille.objects.filter(Q(chef_de_bord=user) | Q(coequipier=user), date_patrouille__year=annee_en_cours)
     nb_mes_patrouilles = mes_patrouilles.count()
+    prochaine_patrouille = Patrouille.objects.filter(Q(chef_de_bord=user) | Q(coequipier=user), date_patrouille__gte=date.today()).order_by('date_patrouille').first()
 
-    # 2. Trouver sa prochaine patrouille (date >= aujourd'hui)
-    prochaine_patrouille = user.patrouilles.filter(date_patrouille__gte=date.today()).order_by('date_patrouille').first()
-
-    # 3. Stats globales de l'association (pour l'esprit d'équipe)
     total_patrouilles_ccff = Patrouille.objects.filter(date_patrouille__year=annee_en_cours).count()
-
-    # 4. Les documents (qu'on avait déjà)
     documents = DocumentIntranet.objects.all().order_by('-date_ajout')
 
     context = {
@@ -110,9 +108,42 @@ def intranet(request):
 
 @login_required(login_url='/connexion/')
 def planning(request):
-    # On récupère les patrouilles à partir d'aujourd'hui, triées par date
-    patrouilles = Patrouille.objects.filter(date_patrouille__gte=timezone.now().date()).order_by('date_patrouille', 'heure_debut')
-    return render(request, 'planning.html', {'patrouilles': patrouilles})
+    # SI LE BENEVOLE SOUMET LE FORMULAIRE DE CRÉATION
+    if request.method == 'POST':
+        date_p = request.POST.get('date_patrouille')
+        heure_d = request.POST.get('heure_debut')
+        heure_f = request.POST.get('heure_fin')
+        type_p = request.POST.get('type_patrouille')
+        coequipier_id = request.POST.get('coequipier')
+        vehicule_id = request.POST.get('vehicule')
+
+        nouvelle_patrouille = Patrouille(
+            date_patrouille=date_p, heure_debut=heure_d, heure_fin=heure_f,
+            type_patrouille=type_p, chef_de_bord=request.user
+        )
+
+        if coequipier_id: nouvelle_patrouille.coequipier_id = coequipier_id
+        if vehicule_id: nouvelle_patrouille.vehicule_id = vehicule_id
+
+        nouvelle_patrouille.save()
+        messages.success(request, "Votre patrouille a été ajoutée au planning !")
+        return redirect('planning')
+
+    # AFFICHAGE DE LA PAGE
+    patrouilles = Patrouille.objects.filter(date_patrouille__gte=timezone.now().date()).order_by('date_patrouille')
+    benevoles = User.objects.filter(is_active=True).exclude(id=request.user.id) # Tous les autres bénévoles
+    vehicules = Materiel.objects.filter(categorie='VEHICULE', en_service=True)
+    
+    # On calcule dynamiquement l'année en cours pour contraindre le calendrier (Juin à Septembre)
+    annee = timezone.now().year
+
+    return render(request, 'planning.html', {
+        'patrouilles': patrouilles,
+        'benevoles': benevoles,
+        'vehicules': vehicules,
+        'date_min': f"{annee}-06-01",
+        'date_max': f"{annee}-09-30",
+    })
 
 @login_required(login_url='/connexion/')
 def inscription_patrouille(request, patrouille_id):
@@ -133,3 +164,11 @@ def inscription_patrouille(request, patrouille_id):
 @login_required(login_url='/connexion/')
 def carte_dfci(request):
     return render(request, 'carte.html')
+
+@login_required(login_url='/connexion/')
+def supprimer_patrouille(request, patrouille_id):
+    patrouille = get_object_or_404(Patrouille, id=patrouille_id)
+    if patrouille.chef_de_bord == request.user or request.user.is_staff:
+        patrouille.delete()
+        messages.success(request, "La patrouille a été annulée.")
+    return redirect('planning')

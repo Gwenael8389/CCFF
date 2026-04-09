@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 class Actualite(models.Model):
     titre = models.CharField(max_length=200)
@@ -110,10 +111,14 @@ class Patrouille(models.Model):
     heure_fin = models.TimeField()
     type_patrouille = models.CharField(max_length=20, choices=TYPES, default='MOBILE')
     
-    # On relie la patrouille aux utilisateurs (bénévoles) de Django
-    benevoles = models.ManyToManyField(User, related_name='patrouilles')
+    chef_de_bord = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patrouilles_dirigees')
+    coequipier = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='patrouilles_assistees')
+    vehicule = models.ForeignKey(Materiel, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'categorie': 'VEHICULE'})
     
     rapport = models.TextField(blank=True, null=True, help_text="RAS ou incidents à signaler")
 
+    class Meta:
+        ordering = ['date_patrouille', 'heure_debut']
+
     def __str__(self):
-        return f"{self.get_type_patrouille_display()} du {self.date_patrouille.strftime('%d/%m/%Y')}"
+        return f"{self.get_type_patrouille_display()} du {self.date_patrouille.strftime('%d/%m/%Y')} - Chef: {self.chef_de_bord.username}"
