@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, Dotation, DossierGalerie, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, Dotation, ArticleEPI, DossierGalerie, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import date, datetime, timedelta
 from django.utils import timezone
