@@ -10,7 +10,7 @@ import calendar
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from .forms import ActualiteForm, PhotoForm, DocumentForm
+from .forms import ActualiteForm, PhotoForm, DocumentForm, ArticleEPIForm
 import os
 
 def home(request):
@@ -473,6 +473,13 @@ def gestion_vestiaire(request):
     # Si on soumet une nouvelle dotation
     if request.method == 'POST':
         action = request.POST.get('action')
+
+        if action == 'creer_article' and request.user.is_superuser:
+            form_article = ArticleEPIForm(request.POST)
+            if form_article.is_valid():
+                form_article.save()
+                messages.success(request, "Nouvel article ajouté au catalogue.")
+                return redirect('gestion_vestiaire')
         
         if action == 'attribuer':
             benevole_id = request.POST.get('benevole')
@@ -480,25 +487,32 @@ def gestion_vestiaire(request):
             taille = request.POST.get('taille')
             etat = request.POST.get('etat')
             
-            benevole = get_object_or_404(User, id=benevole_id)
-            article = get_object_or_404(ArticleEPI, id=article_id)
-            
+            benevole = get_object_or_404(User, id=request.POST.get('benevole'))
+            article = get_object_or_404(ArticleEPI, id=request.POST.get('article'))
             Dotation.objects.create(
                 benevole=benevole,
                 article=article,
-                taille=taille,
-                etat_actuel=etat
+                taille=request.POST.get('taille'),
+                etat_actuel=request.POST.get('etat')
             )
-            messages.success(request, f"{article.nom} attribué à {benevole.first_name} avec succès.")
+            messages.success(request, f"Équipement assigné à {benevole.first_name}.")
+            return redirect('gestion_vestiaire')
             
         elif action == 'rendre':
-            dotation_id = request.POST.get('dotation_id')
-            dotation = get_object_or_404(Dotation, id=dotation_id)
+            dotation = get_object_or_404(Dotation, id=request.POST.get('dotation_id'))
             dotation.est_rendu = True
             dotation.save()
-            messages.success(request, f"L'article {dotation.article.nom} a bien été retourné au stock.")
+            messages.success(request, "Article retourné au stock.")
+            return redirect('gestion_vestiaire')
             
-        return redirect('gestion_vestiaire')
+        context = {
+            'benevoles': User.objects.filter(is_active=True).order_by('first_name'),
+            'articles': ArticleEPI.objects.all(),
+            'dotations_en_cours': Dotation.objects.filter(est_rendu=False).select_related('benevole', 'article'),
+            'a_remplacer': Dotation.objects.filter(est_rendu=False, etat_actuel='USE'),
+            'form_article': form_article, # Ajout au contexte
+        }
+        return render(request, 'vestiaire.html', context)
 
     # Récupération des données pour l'affichage
     benevoles = User.objects.filter(is_active=True).order_by('first_name')

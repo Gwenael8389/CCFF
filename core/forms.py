@@ -1,5 +1,5 @@
 from django import forms
-from .models import Actualite, PhotoGalerie, DossierGalerie, DocumentIntranet
+from .models import Actualite, PhotoGalerie, DossierGalerie, DocumentIntranet, ArticleEPI
 
 class ActualiteForm(forms.ModelForm):
     class Meta:
@@ -35,4 +35,14 @@ class DocumentForm(forms.ModelForm):
             'titre': forms.TextInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold', 'placeholder': 'Nom du document...'}),
             'categorie': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-700'}),
             'fichier': forms.FileInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3'}),
+        }
+
+class ArticleEPIForm(forms.ModelForm):
+    class Meta:
+        model = ArticleEPI
+        fields = ['nom', 'categorie', 'prix_indicatif']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-900', 'placeholder': 'Ex: Casquette Orange'}),
+            'categorie': forms.Select(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-900'}),
+            'prix_indicatif': forms.NumberInput(attrs={'class': 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-900'}),
         }
