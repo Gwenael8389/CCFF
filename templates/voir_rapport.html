@@ -1,81 +1,55 @@
 {% extends "base.html" %}
-{% block title %}Rapport du {{ patrouille.date_patrouille }}{% endblock %}
+{% block title %}Rapport de Patrouille{% endblock %}
 
 {% block content %}
 <style>
-    /* Quand on imprime, on cache tout ce qui n'est pas le rapport */
     @media print {
         header, footer, .no-print { display: none !important; }
-        .print-area { border: none !important; shadow: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-        body { background: white !important; }
+        .print-area { border: none !important; box-shadow: none !important; width: 100% !important; margin: 0 !important; }
     }
 </style>
 
 <div class="max-w-4xl mx-auto px-4 py-12">
-    <div class="no-print flex justify-between items-center mb-8">
-        <a href="{% url 'archives_rapports' %}" class="text-slate-600 font-bold hover:underline">← Retour Archives</a>
-        <button onclick="window.print()" class="bg-brand-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg hover:bg-brand-600 transition">
-            🖨️ Imprimer / Enregistrer en PDF
+    <div class="no-print flex justify-between mb-6">
+        <a href="{% url 'archives_rapports' %}" class="text-slate-600 font-bold">← Retour</a>
+        <button onclick="window.print()" class="bg-brand-500 text-white px-6 py-2 rounded-xl font-bold">
+            Imprimer / Enregistrer en PDF
         </button>
     </div>
 
     <div class="print-area bg-white rounded-3xl p-10 shadow-xl border border-slate-100">
         <div class="text-center border-b-2 border-brand-500 pb-6 mb-8">
             <h1 class="text-3xl font-black text-slate-900 uppercase">Rapport de Mission CCFF</h1>
-            <p class="text-brand-600 font-bold tracking-widest">COMMUNE DE BESSE-SUR-ISSOLE</p>
+            <p class="text-brand-600 font-bold uppercase tracking-widest">Besse-sur-Issole</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-8 mb-8">
+        <div class="grid grid-cols-2 gap-8 mb-8 text-sm">
             <div>
-                <h3 class="text-xs font-black text-slate-400 uppercase mb-2">Détails Mission</h3>
-                <p class="font-bold text-slate-900">Date : {{ patrouille.date_patrouille|date:"d/m/Y" }}</p>
-                <p class="text-slate-700">Type : {{ patrouille.get_mission_type_display }}</p>
-                <p class="text-slate-700">Horaires : {{ patrouille.heure_debut }} - {{ patrouille.heure_fin }}</p>
+                <p><strong>Date :</strong> {{ patrouille.date_patrouille|date:"d/m/Y" }}</p>
+                <p><strong>Mission :</strong> {{ patrouille.get_mission_type_display }}</p>
             </div>
             <div>
-                <h3 class="text-xs font-black text-slate-400 uppercase mb-2">Équipage & Véhicule</h3>
-                <p class="font-bold text-slate-900">Chef : {{ patrouille.chef_de_bord.get_full_name|default:patrouille.chef_de_bord.username }}</p>
-                <p class="text-slate-700">Coéquipier : {{ patrouille.coequipier.get_full_name|default:"Néant" }}</p>
-                <p class="text-slate-700">Véhicule : {{ patrouille.vehicule.nom|default:"Vigie" }}</p>
+                <p><strong>Chef :</strong> {{ patrouille.chef_de_bord.get_full_name|default:patrouille.chef_de_bord.username }}</p>
+                <p><strong>Véhicule :</strong> {{ patrouille.vehicule.nom|default:"Vigie" }}</p>
             </div>
         </div>
 
-        <div class="bg-slate-50 rounded-2xl p-6 mb-8 grid grid-cols-2 gap-4">
-            <div>
-                <span class="block text-xs font-black text-slate-400 uppercase">KM Départ</span>
-                <span class="text-xl font-black">{{ patrouille.km_debut }}</span>
-            </div>
-            <div>
-                <span class="block text-xs font-black text-slate-400 uppercase">KM Retour</span>
-                <span class="text-xl font-black">{{ patrouille.km_fin }}</span>
-            </div>
-            <div class="col-span-2 pt-2 border-t border-slate-200">
-                <span class="text-sm font-bold text-slate-600">Total parcouru : {{ patrouille.km_fin|add:"-"|add:patrouille.km_debut }} km</span>
-            </div>
+        <div class="bg-slate-50 p-6 rounded-2xl mb-8">
+            <h3 class="text-xs font-black text-slate-400 uppercase mb-4">Main Courante</h3>
+            <p class="text-slate-800">{{ patrouille.rapport|linebreaksbr }}</p>
         </div>
 
-        <div class="mb-8">
-            <h3 class="text-xs font-black text-slate-400 uppercase mb-4">Main Courante / Rapport</h3>
-            <div class="text-slate-800 leading-relaxed bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                {{ patrouille.rapport|linebreaksbr }}
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-12 mt-12">
-            <div class="text-center">
-                <p class="text-xs font-black text-slate-400 uppercase mb-4">Signature Chef de Bord</p>
+        <div class="grid grid-cols-2 gap-12 mt-12 text-center">
+            <div>
+                <p class="text-xs font-black text-slate-400 uppercase mb-4">Signature Chef</p>
                 {% if patrouille.signature_chef %}
-                    <img src="{{ patrouille.signature_chef }}" class="mx-auto max-h-32 border-b border-slate-200" alt="Signature Chef">
-                {% else %}
-                    <div class="h-24 border-b border-dashed border-slate-300"></div>
+                    <img src="{{ patrouille.signature_chef }}" class="mx-auto max-h-32">
                 {% endif %}
             </div>
-            <div class="text-center">
+            <div>
                 <p class="text-xs font-black text-slate-400 uppercase mb-4">Signature Coéquipier</p>
                 {% if patrouille.signature_coequipier %}
-                    <img src="{{ patrouille.signature_coequipier }}" class="mx-auto max-h-32 border-b border-slate-200" alt="Signature Coéquipier">
-                {% else %}
-                    <div class="h-24 border-b border-dashed border-slate-300"></div>
+                    <img src="{{ patrouille.signature_coequipier }}" class="mx-auto max-h-32">
                 {% endif %}
             </div>
         </div>

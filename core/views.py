@@ -11,7 +11,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
