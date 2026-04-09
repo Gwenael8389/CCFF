@@ -5,3 +5,4 @@ whitenoise
 gunicorn
 pillow
 python-dotenv
+xhtml2pdf

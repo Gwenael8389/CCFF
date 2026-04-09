@@ -3,7 +3,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, 
                         missions, actualites, galerie, soutenir, intranet, planning, 
-                        supprimer_patrouille, inscription_patrouille, carte_dfci, saisir_rapport, gestion_alerte)
+                        supprimer_patrouille, inscription_patrouille, carte_dfci, 
+                        saisir_rapport, gestion_alerte, archives_rapports, telecharger_pdf)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,6 +18,8 @@ urlpatterns = [
     path('missions/', missions, name='missions'),
     path('actualites/', actualites, name='actualites'),
     path('galerie/', galerie, name='galerie'),
+    path('intranet/archives/', archives_rapports, name='archives_rapports'),
+    path('intranet/archives/pdf/<int:patrouille_id>/', telecharger_pdf, name='telecharger_pdf'),
     
     # Espace Intranet
     path('intranet/', intranet, name='intranet'),

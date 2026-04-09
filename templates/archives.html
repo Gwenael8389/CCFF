@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Archives des Rapports | CCFF{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 mb-2">Archives des Patrouilles</h1>
+            <p class="text-slate-600 font-bold">Espace classifié - Accès Super Administrateur uniquement.</p>
+        </div>
+        <a href="{% url 'intranet' %}" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm">Retour Intranet</a>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-widest">
+                    <th class="p-4 font-black">Date</th>
+                    <th class="p-4 font-black">Mission</th>
+                    <th class="p-4 font-black">Chef de bord</th>
+                    <th class="p-4 font-black">Kilomètres</th>
+                    <th class="p-4 font-black text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in rapports %}
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-4 font-bold text-slate-900">{{ p.date_patrouille|date:"d/m/Y" }}</td>
+                    <td class="p-4"><span class="bg-brand-50 text-brand-600 px-2 py-1 rounded text-xs font-bold">{{ p.get_mission_type_display }}</span></td>
+                    <td class="p-4 text-sm font-bold text-slate-700">{{ p.chef_de_bord.first_name|default:p.chef_de_bord.username }}</td>
+                    <td class="p-4 text-sm text-slate-600">{{ p.km_fin|add:"-"|add:p.km_debut }} km</td>
+                    <td class="p-4 text-right">
+                        <a href="{% url 'telecharger_pdf' p.id %}" target="_blank" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-brand-600 transition flex items-center gap-2 justify-end inline-flex">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Générer PDF
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-8 text-center text-slate-500 italic">Aucun rapport clôturé pour le moment.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

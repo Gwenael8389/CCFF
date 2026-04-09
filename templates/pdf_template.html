@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport de Patrouille</title>
+    <style>
+        @page { size: A4; margin: 2cm; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 12pt; color: #333; }
+        h1 { color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 5px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .section { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .section-title { font-weight: bold; background-color: #f1f5f9; padding: 5px; margin-top: -15px; margin-left: -15px; margin-right: -15px; margin-bottom: 15px; border-bottom: 1px solid #ddd; }
+        table { w-full; border-collapse: collapse; }
+        td { padding: 5px; }
+        .signature-box { width: 45%; display: inline-block; text-align: center; margin-top: 30px; }
+        .signature-img { width: 200px; height: 100px; border-bottom: 1px dashed #999; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Rapport de Mission CCFF</h1>
+        <p>Commune de Besse-sur-Issole</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">1. Informations Générales</div>
+        <table>
+            <tr><td><b>Date :</b> {{ patrouille.date_patrouille|date:"d/m/Y" }}</td><td><b>Type :</b> {{ patrouille.get_mission_type_display }}</td></tr>
+            <tr><td><b>Heure :</b> {{ patrouille.heure_debut|time:"H:i" }} - {{ patrouille.heure_fin|time:"H:i" }}</td><td><b>Véhicule :</b> {{ patrouille.vehicule.nom|default:"Aucun" }}</td></tr>
+            <tr><td><b>Chef de bord :</b> {{ patrouille.chef_de_bord.first_name }} {{ patrouille.chef_de_bord.last_name }}</td><td><b>Coéquipier :</b> {% if patrouille.coequipier %}{{ patrouille.coequipier.first_name }} {{ patrouille.coequipier.last_name }}{% else %}Néant{% endif %}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. Véhicule & Logistique</div>
+        <table>
+            <tr><td><b>KM Départ :</b> {{ patrouille.km_debut }} km</td><td><b>KM Retour :</b> {{ patrouille.km_fin }} km</td></tr>
+            <tr><td colspan="2"><b>Distance parcourue :</b> {{ patrouille.km_fin|add:"-"|add:patrouille.km_debut }} km</td></tr>
+        </table>
+        <p><b>Checklist validée au départ :</b> Huile ({% if patrouille.chk_huile %}Oui{% else %}Non{% endif %}), Eau ({% if patrouille.chk_eau %}Oui{% else %}Non{% endif %}), Carburant ({% if patrouille.chk_carburant %}Oui{% else %}Non{% endif %}), Radio ({% if patrouille.chk_radio %}Oui{% else %}Non{% endif %}), Pneus ({% if patrouille.chk_pneus %}Oui{% else %}Non{% endif %}), Pompe ({% if patrouille.chk_pompe %}Oui{% else %}Non{% endif %}).</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. Bilan de la Patrouille</div>
+        <p><b>Météo :</b> {{ patrouille.get_meteo_display }}</p>
+        <p><b>Main Courante :</b><br>
+        {{ patrouille.rapport|linebreaksbr }}</p>
+    </div>
+
+    <div class="signature-box">
+        <p><b>Signature Chef de Bord</b></p>
+        {% if patrouille.signature_chef %}
+            <img src="{{ patrouille.signature_chef }}" class="signature-img">
+        {% else %}
+            <div class="signature-img"></div>
+        {% endif %}
+    </div>
+
+    {% if patrouille.coequipier %}
+    <div class="signature-box" style="float: right;">
+        <p><b>Signature Coéquipier</b></p>
+        {% if patrouille.signature_coequipier %}
+            <img src="{{ patrouille.signature_coequipier }}" class="signature-img">
+        {% else %}
+            <div class="signature-img"></div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</body>
+</html>

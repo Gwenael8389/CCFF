@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, User, Alerte
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import date
 from django.utils import timezone
 from django.db.models import Q
 import calendar
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -304,3 +307,30 @@ def gestion_alerte(request):
         return redirect('intranet')
         
     return render(request, 'alerte.html')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/intranet/')
+def archives_rapports(request):
+    # On récupère toutes les patrouilles terminées
+    rapports = Patrouille.objects.filter(est_terminee=True).order_by('-date_patrouille')
+    return render(request, 'archives.html', {'rapports': rapports})
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/intranet/')
+def telecharger_pdf(request, patrouille_id):
+    patrouille = get_object_or_404(Patrouille, id=patrouille_id, est_terminee=True)
+    
+    # On charge un template HTML spécial pour l'impression
+    template = get_template('pdf_template.html')
+    html = template.render({'patrouille': patrouille})
+    
+    # On crée la réponse PDF
+    response = HttpResponse(content_type='application/pdf')
+    # On donne un joli nom au fichier téléchargé
+    filename = f"Rapport_CCFF_{patrouille.date_patrouille.strftime('%Y%m%d')}.pdf"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # xhtml2pdf fait la magie
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Une erreur est survenue lors de la création du PDF')
+    return response
