@@ -72,12 +72,13 @@
 
     <section class="py-24 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-black text-slate-900 mb-4">Nos Missions sur le Terrain</h2>
-                <a href="{% url 'missions' %}" class="hidden sm:inline-flex items-center gap-2 text-brand-600 font-bold hover:text-brand-700 transition">
-                    Toutes les actus <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-2">Nos Missions sur le Terrain</h2>
+                </div>
+                <a href="{% url 'actualites' %}" class="hidden sm:inline-flex items-center gap-2 text-brand-600 font-bold hover:text-brand-700 transition">
+                    Toutes nos mission & l'équipement <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
-                <p class="text-slate-600 max-w-2xl mx-auto">Le CCFF agit sous l'autorité du Maire. Composé de bénévoles formés, il est le premier maillon de la chaîne de sécurité civile communale.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
