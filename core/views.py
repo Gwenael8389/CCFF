@@ -6,8 +6,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.utils import timezone
 from django.db.models import Q
-
-
+import calendar
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -108,7 +107,19 @@ def intranet(request):
 
 @login_required(login_url='/connexion/')
 def planning(request):
-    # SI LE BENEVOLE SOUMET LE FORMULAIRE DE CRÉATION
+    annee = timezone.now().year
+    mois_actuel = timezone.now().month
+
+    # 1. GESTION DE LA NAVIGATION DES MOIS (Juin à Septembre)
+    try:
+        mois_selectionne = int(request.GET.get('mois', mois_actuel))
+        # Si on est hors saison ou qu'on triche avec l'URL, on force entre Juin (6) et Septembre (9)
+        if mois_selectionne not in [6, 7, 8, 9]:
+            mois_selectionne = 6 if mois_actuel < 6 else (9 if mois_actuel > 9 else mois_actuel)
+    except ValueError:
+        mois_selectionne = 6
+
+    # 2. SOUMISSION DU FORMULAIRE (Inscription)
     if request.method == 'POST':
         date_p = request.POST.get('date_patrouille')
         heure_d = request.POST.get('heure_debut')
@@ -121,24 +132,57 @@ def planning(request):
             date_patrouille=date_p, heure_debut=heure_d, heure_fin=heure_f,
             type_patrouille=type_p, chef_de_bord=request.user
         )
-
         if coequipier_id: nouvelle_patrouille.coequipier_id = coequipier_id
         if vehicule_id: nouvelle_patrouille.vehicule_id = vehicule_id
 
         nouvelle_patrouille.save()
         messages.success(request, "Votre patrouille a été ajoutée au planning !")
-        return redirect('planning')
+        # On redirige vers le même mois pour ne pas perdre l'utilisateur
+        return redirect(f'/intranet/planning/?mois={mois_selectionne}')
 
-    # AFFICHAGE DE LA PAGE
-    patrouilles = Patrouille.objects.filter(date_patrouille__gte=timezone.now().date()).order_by('date_patrouille')
-    benevoles = User.objects.filter(is_active=True).exclude(id=request.user.id) # Tous les autres bénévoles
-    vehicules = Materiel.objects.filter(categorie='VEHICULE', en_service=True)
+    # 3. GÉNÉRATION DU CALENDRIER VISUEL
+    patrouilles_du_mois = Patrouille.objects.filter(date_patrouille__year=annee, date_patrouille__month=mois_selectionne)
     
-    # On calcule dynamiquement l'année en cours pour contraindre le calendrier (Juin à Septembre)
-    annee = timezone.now().year
+    # On trie intelligemment en mémoire pour ne pas surcharger la base de données
+    jours_mes_patrouilles = set()
+    jours_autres_patrouilles = set()
+    
+    for p in patrouilles_du_mois:
+        if p.chef_de_bord == request.user or p.coequipier == request.user:
+            jours_mes_patrouilles.add(p.date_patrouille)
+        else:
+            jours_autres_patrouilles.add(p.date_patrouille)
+
+    # Création de la matrice du calendrier
+    cal = calendar.Calendar(firstweekday=0) # Semaine commence le Lundi
+    jours_mois = cal.itermonthdates(annee, mois_selectionne)
+    
+    calendrier_data = []
+    aujourdhui = date.today()
+
+    for jour in jours_mois:
+        if jour.month != mois_selectionne:
+            calendrier_data.append({'hors_mois': True}) # Cases vides du calendrier
+        else:
+            calendrier_data.append({
+                'date': jour,
+                'hors_mois': False,
+                'passe': jour < aujourdhui,
+                'mes_patrouilles': jour in jours_mes_patrouilles,
+                'autres_patrouilles': jour in jours_autres_patrouilles,
+            })
+
+    # 4. DONNÉES GLOBALES POUR LA PAGE
+    patrouilles_futures = Patrouille.objects.filter(date_patrouille__gte=aujourdhui).order_by('date_patrouille', 'heure_debut')
+    benevoles = User.objects.filter(is_active=True).exclude(id=request.user.id)
+    vehicules = Materiel.objects.filter(categorie='VEHICULE', en_service=True)
+    mois_noms = {6: 'Juin', 7: 'Juillet', 8: 'Août', 9: 'Septembre'}
 
     return render(request, 'planning.html', {
-        'patrouilles': patrouilles,
+        'calendrier': calendrier_data,
+        'mois_selectionne': mois_selectionne,
+        'mois_noms': mois_noms,
+        'patrouilles': patrouilles_futures,
         'benevoles': benevoles,
         'vehicules': vehicules,
         'date_min': f"{annee}-06-01",

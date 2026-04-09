@@ -8,7 +8,7 @@
     <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-slate-200 pb-8">
         <div>
             <h1 class="text-3xl font-black text-slate-900 mb-2">Planning Estival</h1>
-            <p class="text-slate-600">Saison de surveillance : 1er Juin au 30 Septembre.</p>
+            <p class="text-slate-600">Consultez la couverture et inscrivez-vous sur les jours vacants.</p>
         </div>
         <div class="mt-4 md:mt-0">
             <a href="{% url 'intranet' %}" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm flex items-center gap-2">
@@ -35,7 +35,7 @@
                     Créer une patrouille
                 </h2>
                 
-                <form method="POST" action="{% url 'planning' %}" class="space-y-5">
+                <form method="POST" action="{% url 'planning' %}?mois={{ mois_selectionne }}" class="space-y-5">
                     {% csrf_token %}
                     
                     <div>
@@ -90,9 +90,62 @@
         </div>
 
         <div class="lg:col-span-2">
+            
+            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-8">
+                
+                <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4">
+                    {% for m_num, m_nom in mois_noms.items %}
+                        <a href="?mois={{ m_num }}" class="px-5 py-2 rounded-xl font-bold transition text-sm {% if m_num == mois_selectionne %}bg-slate-900 text-white shadow-md{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                            {{ m_nom }}
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 md:gap-2 text-center mb-2">
+                    <div class="text-xs font-black text-slate-400">LUN</div>
+                    <div class="text-xs font-black text-slate-400">MAR</div>
+                    <div class="text-xs font-black text-slate-400">MER</div>
+                    <div class="text-xs font-black text-slate-400">JEU</div>
+                    <div class="text-xs font-black text-slate-400">VEN</div>
+                    <div class="text-xs font-black text-brand-500">SAM</div>
+                    <div class="text-xs font-black text-brand-500">DIM</div>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-1 md:gap-2">
+                    {% for jour in calendrier %}
+                        {% if jour.hors_mois %}
+                            <div class="p-2 md:p-3 bg-transparent"></div>
+                        {% else %}
+                            <div class="p-2 md:p-3 rounded-xl border flex flex-col items-center justify-center transition
+                                {% if jour.passe %}opacity-40 grayscale{% endif %}
+                                {% if jour.mes_patrouilles %}bg-brand-500 text-white border-brand-600 shadow-md transform hover:scale-105
+                                {% elif jour.autres_patrouilles %}bg-blue-50 text-blue-700 border-blue-200
+                                {% else %}bg-white text-slate-600 border-slate-200 hover:border-brand-500{% endif %}">
+                                
+                                <span class="font-black text-lg">{{ jour.date.day }}</span>
+                                
+                                <div class="flex gap-1 mt-1">
+                                    {% if jour.mes_patrouilles %}
+                                        <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                                    {% elif jour.autres_patrouilles %}
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4 mt-6 text-xs font-bold text-slate-500 bg-slate-50 p-4 rounded-xl">
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-brand-500"></div> Ma patrouille</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-blue-100 border border-blue-300"></div> Couvert par l'équipe</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-white border border-slate-300"></div> Jour libre (Inscrivez-vous)</div>
+                </div>
+            </div>
+
             <h2 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
-                <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                Patrouilles programmées
+                <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                Détail des équipes à venir
             </h2>
 
             <div class="space-y-4">
@@ -143,9 +196,7 @@
                 </div>
                 {% empty %}
                 <div class="bg-white rounded-3xl p-12 border border-slate-100 text-center">
-                    <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Aucune patrouille planifiée</h3>
-                    <p class="text-slate-500 text-sm">Soyez le premier à réserver un créneau en utilisant le formulaire.</p>
+                    <p class="text-slate-500 text-sm">Aucune patrouille planifiée à venir.</p>
                 </div>
                 {% endfor %}
             </div>
