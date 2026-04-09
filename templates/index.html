@@ -118,7 +118,7 @@
                             </li>
                             <li class="flex items-center gap-3 text-white">
                                 <svg class="w-6 h-6 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Le permis B n'est pas obligatoire pour être patrouilleur ou vigie.
+                                Le permis B n'est pas obligatoire pour être patrouilleur.
                             </li>
                         </ul>
                         
@@ -172,7 +172,7 @@
                         <h2 class="text-2xl font-black text-slate-900 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</h2>
                         <p class="text-slate-600 mb-6 leading-relaxed">Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.</p>
                         <div>
-                            <div class="font-bold text-slate-900">Jean Dupont</div>
+                            <div class="font-bold text-slate-900">François Vincennes</div>
                             <div class="text-brand-600 text-sm font-bold uppercase tracking-widest">Président du CCFF de Besse</div>
                         </div>
                     </div>
@@ -193,36 +193,17 @@
                 </div>
                 
                 <div class="grid md:grid-cols-3 gap-8">
-                    <a href="#" class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1628186175591-628fccbc5db4?q=80&w=800&auto=format&fit=crop" alt="Actu" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
+                    {% for actu in actus %}
+                    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
                         <div class="p-6">
-                            <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">15 Mai 2026</div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition">Lancement de la saison estivale : Nos équipes sont prêtes</h3>
-                            <p class="text-slate-600 text-sm line-clamp-2">Retour sur notre dernière journée de formation avec les pompiers du SDIS 83 pour préparer l'été.</p>
+                            <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{{ actu.date_publication|date:"d M Y" }}</div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-2">{{ actu.titre }}</h3>
+                            <p class="text-slate-600 text-sm line-clamp-3">{{ actu.contenu }}</p>
                         </div>
-                    </a>
-                    <a href="#" class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
-                        <div class="h-48 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1542382257-80da9fcbc022?q=80&w=800&auto=format&fit=crop" alt="Actu" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <div class="p-6">
-                            <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">02 Avril 2026</div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition">Rappel : Obligations Légales de Débroussaillement (OLD)</h3>
-                            <p class="text-slate-600 text-sm line-clamp-2">Le printemps est là, il est temps de nettoyer vos terrains pour protéger vos habitations.</p>
-                        </div>
-                    </a>
-                    <a href="#" class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition duration-300">
-                        <div class="h-48 overflow-hidden bg-slate-200 flex items-center justify-center">
-                            <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <div class="p-6">
-                            <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">10 Mars 2026</div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition">Loto de l'Amicale du CCFF</h3>
-                            <p class="text-slate-600 text-sm line-clamp-2">Venez nombreux à la salle des fêtes pour soutenir l'association et gagner de superbes lots !</p>
-                        </div>
-                    </a>
+                    </div>
+                    {% empty %}
+                    <p class="text-slate-500 italic">Aucune actualité pour le moment.</p>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -231,15 +212,14 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-brand-500/50">
                     <div>
-                        <div class="text-4xl font-black text-white mb-2">35</div>
+                        <div class="text-4xl font-black text-white mb-2">{{ nb_benevoles }}</div>
                         <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Bénévoles Actifs</div>
                     </div>
                     <div>
-                        <div class="text-4xl font-black text-white mb-2">1200</div>
-                        <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Heures de Patrouille</div>
+                        <div class="text-4xl font-black text-white mb-2">1200</div> <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Heures de Patrouille</div>
                     </div>
                     <div>
-                        <div class="text-4xl font-black text-white mb-2">2</div>
+                        <div class="text-4xl font-black text-white mb-2">{{ nb_vehicules }}</div>
                         <div class="text-brand-100 text-sm font-bold uppercase tracking-widest">Véhicules 4x4</div>
                     </div>
                     <div>

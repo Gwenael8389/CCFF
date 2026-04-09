@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Actualite, Materiel
 
-# Register your models here.
+admin.site.register(Actualite)
+admin.site.register(Materiel)
