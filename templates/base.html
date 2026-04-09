@@ -25,13 +25,45 @@
                     </div>
                 </a>
 
-                <nav class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider items-center">
-                    <a href="/" class="text-brand-600">Accueil</a>
-                    <a href="{% url 'missions' %}" class="text-slate-600 hover:text-brand-600 transition">Le CCFF</a>
-                    <a href="{% url 'actualites' %}" class="text-slate-600 hover:text-brand-600 transition">Actualités</a>
-                    <a href="{% url 'galerie' %}" class="text-slate-600 hover:text-brand-600 transition">Galerie</a>
-                    <a href="/reglementation/" class="text-slate-600 hover:text-brand-600 transition">Prévention</a>
-                    <a href="{% url 'soutenir' %}" class="text-brand-500 hover:text-brand-700 transition">Soutenir</a>
+                <nav class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider items-center h-full">
+                    <a href="/" class="text-brand-600 hover:text-brand-700 transition">Accueil</a>
+
+                    <div class="relative group h-full flex items-center">
+                        <button class="flex items-center gap-1 text-slate-600 hover:text-brand-600 transition uppercase tracking-wider font-bold">
+                            L'Association
+                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div class="absolute top-full left-0 pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top -translate-y-2 group-hover:translate-y-0">
+                            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-3 flex flex-col gap-1">
+                                <a href="{% url 'missions' %}" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Le CCFF & Missions</a>
+                                <a href="{% url 'actualites' %}" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Actualités</a>
+                                <a href="{% url 'galerie' %}" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Galerie Photos</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group h-full flex items-center">
+                        <button class="flex items-center gap-1 text-slate-600 hover:text-brand-600 transition uppercase tracking-wider font-bold">
+                            Infos & Contact
+                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div class="absolute top-full left-0 pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top -translate-y-2 group-hover:translate-y-0">
+                            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-3 flex flex-col gap-1">
+                                <a href="/reglementation/" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Réglementation (OLD)</a>
+                                <a href="/contact/" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Contact & Urgences</a>
+                                
+                                <div class="h-px bg-slate-100 my-2 mx-4"></div>
+                                
+                                <a href="{% url 'soutenir' %}" class="px-4 py-3 text-sm text-brand-600 font-bold hover:bg-brand-50 rounded-xl transition flex justify-between items-center group/btn">
+                                    Soutenir le CCFF
+                                    <svg class="w-4 h-4 text-brand-400 group-hover/btn:text-brand-600 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                 </nav>
 
                 <div class="hidden lg:flex items-center gap-4">
