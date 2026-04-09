@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Gestion Matériel | CCFF{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-slate-200 pb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 mb-2">Matériel & Véhicules</h1>
+            <p class="text-slate-600 font-bold">Signalez une panne ou un équipement défectueux.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'intranet' %}" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Retour Intranet
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-8 p-4 bg-green-50 border border-green-200 text-green-700 font-bold px-4 py-3 rounded-xl">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl sticky top-28">
+                <h2 class="text-xl font-black text-brand-600 mb-6 flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Nouveau Ticket
+                </h2>
+                
+                <form method="POST" class="space-y-5">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="signaler">
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Matériel concerné</label>
+                        <select name="materiel" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 font-bold text-slate-800">
+                            <option value="">-- Sélectionnez --</option>
+                            {% for m in materiels %}
+                                <option value="{{ m.id }}">{{ m.nom }} ({{ m.get_categorie_display }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Description du problème</label>
+                        <textarea name="description" rows="4" required placeholder="Ex: Le pneu arrière gauche du Patrol est dégonflé..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-500 text-white font-black py-3 rounded-xl hover:bg-brand-600 transition shadow-md mt-4">
+                        Envoyer le signalement
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2">
+            <h2 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                Incidents en cours
+            </h2>
+
+            <div class="space-y-4 mb-12">
+                {% for incident in incidents_en_cours %}
+                <div class="bg-white rounded-2xl p-6 border-l-4 border-orange-500 shadow-sm flex flex-col sm:flex-row justify-between gap-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="bg-orange-100 text-orange-700 text-xs font-black uppercase px-2 py-1 rounded">{{ incident.materiel.get_categorie_display }}</span>
+                            <h3 class="font-black text-slate-900 text-lg">{{ incident.materiel.nom }}</h3>
+                        </div>
+                        <p class="text-slate-700 font-medium mb-3 italic">"{{ incident.description }}"</p>
+                        <p class="text-xs font-bold text-slate-400">Signalé par {{ incident.signale_par.first_name|default:incident.signale_par.username }} le {{ incident.date_signalement|date:"d/m/Y à H:i" }}</p>
+                    </div>
+
+                    {% if user.is_staff %}
+                    <div class="flex-shrink-0 flex items-center">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="resoudre">
+                            <input type="hidden" name="signalement_id" value="{{ incident.id }}">
+                            <button type="submit" class="bg-green-100 text-green-700 hover:bg-green-200 border border-green-200 px-4 py-2 rounded-lg font-bold transition text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Marquer Résolu
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center">
+                    <p class="text-slate-500 font-bold">✅ Aucun incident signalé. Tout le matériel est opérationnel !</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if incidents_resolus %}
+            <h2 class="text-lg font-black text-slate-400 mb-4 uppercase tracking-widest text-sm">Derniers incidents résolus</h2>
+            <div class="space-y-3 opacity-60 grayscale hover:grayscale-0 transition">
+                {% for incident in incidents_resolus %}
+                <div class="bg-slate-50 rounded-xl p-4 flex justify-between items-center text-sm">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="font-bold text-slate-700">{{ incident.materiel.nom }}</span>
+                    </div>
+                    <span class="text-slate-500 font-medium">Réparé le {{ incident.date_resolution|date:"d/m/Y" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

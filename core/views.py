@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
 from django.contrib.auth.decorators import login_required,user_passes_test
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
 import calendar
@@ -86,31 +86,54 @@ def galerie(request):
 def soutenir(request):
     return render(request, 'soutenir.html')
 
+def calculer_duree_totale(patrouilles):
+    total_secondes = 0
+    for p in patrouilles:
+        if p.heure_debut and p.heure_fin:
+            # On combine avec la date du jour juste pour faire le calcul mathématique
+            debut = datetime.combine(date.today(), p.heure_debut)
+            fin = datetime.combine(date.today(), p.heure_fin)
+            if fin < debut: # Si la patrouille a croisé minuit
+                fin += timedelta(days=1)
+            
+            # On calcule la durée de la patrouille
+            duree_patrouille = (fin - debut).total_seconds()
+            
+            # Si on veut les heures-bénévoles (2 personnes dans la voiture = 2x plus d'heures)
+            multiplicateur = 2 if p.coequipier else 1
+            total_secondes += (duree_patrouille * multiplicateur)
+            
+    heures = int(total_secondes // 3600)
+    return heures
+
 @login_required(login_url='/connexion/')
 def intranet(request):
     user = request.user
     annee_en_cours = date.today().year
 
-    # Mise à jour : on cherche les patrouilles où l'utilisateur est soit Chef, soit Coéquipier
+    # Patrouilles globales terminées cette année
+    patrouilles_terminees_annee = Patrouille.objects.filter(est_terminee=True, date_patrouille__year=annee_en_cours)
+    
+    # 1. Stats personnelles
     mes_patrouilles = Patrouille.objects.filter(Q(chef_de_bord=user) | Q(coequipier=user), date_patrouille__year=annee_en_cours)
     nb_mes_patrouilles = mes_patrouilles.count()
-    prochaine_patrouille = Patrouille.objects.filter(Q(chef_de_bord=user) | Q(coequipier=user), date_patrouille__gte=date.today()).order_by('date_patrouille').first()
+    mes_heures = calculer_duree_totale(mes_patrouilles.filter(est_terminee=True)) # APPEL DE LA FONCTION
 
+    # 2. Stats globales
     total_patrouilles_ccff = Patrouille.objects.filter(date_patrouille__year=annee_en_cours).count()
+    heures_globales_ccff = calculer_duree_totale(patrouilles_terminees_annee) # APPEL DE LA FONCTION
+
+    prochaine_patrouille = Patrouille.objects.filter(Q(chef_de_bord=user) | Q(coequipier=user), date_patrouille__gte=date.today()).order_by('date_patrouille').first()
     documents = DocumentIntranet.objects.all().order_by('-date_ajout')
-
     alerte_active = Alerte.objects.filter(est_active=True).first()
-
-    rapports_en_attente = Patrouille.objects.filter(
-        chef_de_bord=user, 
-        est_terminee=False, 
-        date_patrouille__lte=date.today()
-    ).order_by('date_patrouille')
+    rapports_en_attente = Patrouille.objects.filter(chef_de_bord=user, est_terminee=False, date_patrouille__lte=date.today()).order_by('date_patrouille')
 
     context = {
         'nb_mes_patrouilles': nb_mes_patrouilles,
-        'prochaine_patrouille': prochaine_patrouille,
+        'mes_heures': mes_heures, # NOUVEAU
         'total_patrouilles_ccff': total_patrouilles_ccff,
+        'heures_globales_ccff': heures_globales_ccff, # NOUVEAU
+        'prochaine_patrouille': prochaine_patrouille,
         'documents': documents,
         'annee_en_cours': annee_en_cours,
         'alerte_active': alerte_active,
@@ -327,3 +350,43 @@ def inscription_newsletter(request):
     
     # Redirige l'utilisateur vers la page d'où il vient (ou l'accueil par défaut)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required(login_url='/connexion/')
+def gestion_materiel(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        # Le bénévole signale une panne
+        if action == 'signaler':
+            materiel_id = request.POST.get('materiel')
+            description = request.POST.get('description')
+            materiel = get_object_or_404(Materiel, id=materiel_id)
+            
+            SignalementMateriel.objects.create(
+                materiel=materiel,
+                signale_par=request.user,
+                description=description
+            )
+            messages.success(request, "Incident signalé avec succès. L'équipe logistique est prévenue !")
+            
+        # Un administrateur marque la panne comme résolue
+        elif action == 'resoudre' and request.user.is_staff:
+            signalement_id = request.POST.get('signalement_id')
+            signalement = get_object_or_404(SignalementMateriel, id=signalement_id)
+            signalement.est_resolu = True
+            signalement.date_resolution = timezone.now()
+            signalement.save()
+            messages.success(request, f"L'incident sur {signalement.materiel.nom} a été marqué comme résolu.")
+            
+        return redirect('gestion_materiel')
+    
+    # Affichage de la page
+    materiels = Materiel.objects.filter(en_service=True).order_by('categorie', 'nom')
+    incidents_en_cours = SignalementMateriel.objects.filter(est_resolu=False)
+    incidents_resolus = SignalementMateriel.objects.filter(est_resolu=True)[:5] # Les 5 derniers résolus
+    
+    return render(request, 'materiel.html', {
+        'materiels': materiels,
+        'incidents_en_cours': incidents_en_cours,
+        'incidents_resolus': incidents_resolus
+    })

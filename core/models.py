@@ -178,3 +178,20 @@ class AbonneNewsletter(models.Model):
 
     def __str__(self):
         return self.email
+
+class SignalementMateriel(models.Model):
+    materiel = models.ForeignKey(Materiel, on_delete=models.CASCADE, related_name='signalements')
+    signale_par = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    description = models.TextField(help_text="Décrivez le problème (ex: Pneu crevé, radio grésille...)")
+    date_signalement = models.DateTimeField(auto_now_add=True)
+    est_resolu = models.BooleanField(default=False)
+    date_resolution = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-date_signalement']
+        verbose_name = "Signalement Matériel"
+        verbose_name_plural = "Signalements Matériel"
+
+    def __str__(self):
+        statut = "RÉSOLU" if self.est_resolu else "EN COURS"
+        return f"[{statut}] {self.materiel.nom} - {self.date_signalement.strftime('%d/%m/%Y')}"
