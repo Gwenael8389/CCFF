@@ -9,6 +9,7 @@ urlpatterns = [
     path('devenir-benevole/', devenir_benevole, name='devenir_benevole'),
     path('contact/', contact, name='contact'),
     path('mention-legales/', mentions_legales, name='mentions legales'),
+    path('reglementation/', reglementation, name='reglementation'),
 
     path('connexion/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('deconnexion/', auth_views.LogoutView.as_view(), name='logout')
