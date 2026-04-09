@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 class Actualite(models.Model):
     titre = models.CharField(max_length=200)
     contenu = models.TextField()
-    image = models.ImageField(upload_to='actus/', border_radius=True, blank=True, null=True)
+    image = models.ImageField(upload_to='actus/', blank=True, null=True)
     date_publication = models.DateTimeField(auto_now_add=True)
 
     def __claire__(self):
