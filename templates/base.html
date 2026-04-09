@@ -33,7 +33,6 @@
                             L'Association
                             <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        
                         <div class="absolute top-full left-0 pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top -translate-y-2 group-hover:translate-y-0">
                             <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-3 flex flex-col gap-1">
                                 <a href="{% url 'missions' %}" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Le CCFF & Missions</a>
@@ -48,14 +47,11 @@
                             Infos & Contact
                             <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        
                         <div class="absolute top-full left-0 pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top -translate-y-2 group-hover:translate-y-0">
                             <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-3 flex flex-col gap-1">
                                 <a href="/reglementation/" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Réglementation (OLD)</a>
                                 <a href="/contact/" class="px-4 py-3 text-sm text-slate-600 font-bold hover:bg-brand-50 hover:text-brand-600 rounded-xl transition">Contact & Urgences</a>
-                                
                                 <div class="h-px bg-slate-100 my-2 mx-4"></div>
-                                
                                 <a href="{% url 'soutenir' %}" class="px-4 py-3 text-sm text-brand-600 font-bold hover:bg-brand-50 rounded-xl transition flex justify-between items-center group/btn">
                                     Soutenir le CCFF
                                     <svg class="w-4 h-4 text-brand-400 group-hover/btn:text-brand-600 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -63,31 +59,74 @@
                             </div>
                         </div>
                     </div>
-
                 </nav>
 
-                <div class="hidden lg:flex items-center gap-4">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'intranet' %}" class="text-slate-900 font-bold text-sm hover:text-brand-600">Mon Intranet</a>
-                        <span class="text-sm font-bold text-slate-500 hidden xl:block">Bonjour, {{ user.username }}</span>
-                        {% if user.is_staff %}
-                            <a href="/admin/" class="text-brand-600 font-bold text-sm hover:underline">Admin</a>
+                <div class="flex items-center gap-4">
+                    <div class="hidden lg:flex items-center gap-4">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'intranet' %}" class="text-slate-900 font-bold text-sm hover:text-brand-600">Mon Intranet</a>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-slate-100 hover:bg-red-50 text-red-600 px-6 py-2.5 rounded-full font-bold transition text-sm">Déconnexion</button>
+                            </form>
+                        {% else %}
+                            <a href="/connexion/" class="bg-slate-900 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg text-sm flex items-center gap-2">
+                                Espace Bénévole
+                            </a>
                         {% endif %}
-                        
-                        <form method="POST" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="bg-slate-100 hover:bg-red-50 text-red-600 px-6 py-2.5 rounded-full font-bold transition text-sm">
-                                Déconnexion
-                            </button>
-                        </form>
-                    {% else %}
-                        <a href="/connexion/" class="bg-slate-900 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg text-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
-                            Espace Bénévole
-                        </a>
-                    {% endif %}
+                    </div>
+
+                    <button id="mobile-menu-button" class="lg:hidden p-2 text-slate-600 hover:text-brand-600 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
             </div>
+        </div>
+
+        <div id="mobile-menu" class="fixed inset-0 z-[60] lg:hidden hidden">
+            <div id="mobile-menu-overlay" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+            <nav class="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-2xl flex flex-col p-6 overflow-y-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <span class="font-black text-slate-900 uppercase">Menu</span>
+                    <button id="mobile-menu-close" class="p-2 text-slate-400 hover:text-red-500 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="flex flex-col gap-6">
+                    <a href="/" class="text-lg font-bold text-brand-600">Accueil</a>
+                    
+                    <div class="border-t border-slate-100 pt-4">
+                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-4">Association</span>
+                        <div class="flex flex-col gap-4 pl-4">
+                            <a href="{% url 'missions' %}" class="font-bold text-slate-600">Le CCFF & Missions</a>
+                            <a href="{% url 'actualites' %}" class="font-bold text-slate-600">Actualités</a>
+                            <a href="{% url 'galerie' %}" class="font-bold text-slate-600">Galerie Photos</a>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4">
+                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-4">Informations</span>
+                        <div class="flex flex-col gap-4 pl-4">
+                            <a href="/reglementation/" class="font-bold text-slate-600">Réglementation</a>
+                            <a href="/contact/" class="font-bold text-slate-600">Contact & Urgences</a>
+                            <a href="{% url 'soutenir' %}" class="font-bold text-brand-500">Soutenir le CCFF</a>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'intranet' %}" class="block w-full text-center bg-slate-900 text-white py-4 rounded-xl font-bold mb-4">Mon Intranet</a>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-red-600 font-bold p-2">Déconnexion</button>
+                            </form>
+                        {% else %}
+                            <a href="/connexion/" class="block w-full text-center bg-slate-900 text-white py-4 rounded-xl font-bold">Connexion Bénévole</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
         </div>
     </header>
 
@@ -115,7 +154,7 @@
                 <ul class="space-y-3 text-sm">
                     <li>📍 Mairie de Besse-sur-Issole<br>Place de la Mairie, 83890</li>
                     <li>📞 Téléphone Mairie : 04 94 69 70 51</li>
-                    <li>✉️ <a href="mailto:contact@ccff-besse.fr" class="hover:text-white transition">contact@ccff-besse.fr</a></li>
+                    <!--<li>✉️ <a href="mailto:contact@ccff-besse.fr" class="hover:text-white transition">contact@ccff-besse.fr</a></li>-->
                 </ul>
             </div>
 
@@ -133,11 +172,25 @@
                 <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-6">Soutiens & Développement</h4>
                 <p class="text-sm mb-4">Le CCFF remercie la Mairie et ses partenaires pour leur soutien logistique et financier tout au long de l'année.</p>
                 <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
-                    Site web développé à titre gracieux par <a href="https://studio4242.vercel.app/" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a> pour soutenir l'engagement bénévole.
+                    Site web développé par <a href="https://studio4242.vercel.app/" class="text-brand-500 hover:text-brand-400 font-bold transition">Studio 4242</a>.
                 </div>
             </div>
         </div>
     </footer>
+    <script>
+        const btnOpen = document.getElementById('mobile-menu-button');
+        const btnClose = document.getElementById('mobile-menu-close');
+        const menu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-menu-overlay');
 
+        function toggleMenu() {
+            menu.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden'); // Empêche de scroller derrière le menu
+        }
+
+        btnOpen.addEventListener('click', toggleMenu);
+        btnClose.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+    </script>
 </body>
 </html>

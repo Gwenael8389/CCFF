@@ -222,10 +222,6 @@ def inscription_patrouille(request, patrouille_id):
     return redirect('planning')
 
 @login_required(login_url='/connexion/')
-def carte_dfci(request):
-    return render(request, 'carte.html')
-
-@login_required(login_url='/connexion/')
 def supprimer_patrouille(request, patrouille_id):
     patrouille = get_object_or_404(Patrouille, id=patrouille_id)
     if patrouille.chef_de_bord == request.user or request.user.is_staff:
