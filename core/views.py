@@ -49,4 +49,4 @@ def contact(request):
     return render(request, 'contact.html')
 
 def mentions_legales(request):
-    return render(request, 'mentions-legales.html')
+    return render(request, 'mention-legales.html')
