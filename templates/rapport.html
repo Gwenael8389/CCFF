@@ -1,20 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Saisir Rapport | CCFF{% endblock %}
+{% block title %}Rapport de Patrouille | CCFF{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto px-4 py-8 md:py-12">
     
     <div class="mb-8">
-        <h1 class="text-3xl font-black text-slate-900 mb-2">Rapport de Patrouille</h1>
+        <h1 class="text-3xl font-black text-slate-900 mb-2">
+            {% if patrouille.km_debut is None %}Démarrer la Patrouille{% else %}Clôturer la Patrouille{% endif %}
+        </h1>
         <p class="text-slate-600 font-bold">Mission du {{ patrouille.date_patrouille|date:"d/m/Y" }} • {{ patrouille.heure_debut|time:"H:i" }} à {{ patrouille.heure_fin|time:"H:i" }}</p>
     </div>
 
-    <form method="POST" class="space-y-8" id="rapportForm">
+    {% if patrouille.km_debut is None %}
+    <form method="POST" class="space-y-8">
         {% csrf_token %}
-        
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <input type="hidden" name="phase" value="depart"> <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
             <h2 class="text-xl font-black text-brand-600 mb-4 border-b border-slate-100 pb-2 uppercase tracking-widest">1. Équipage</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                     <span class="block text-xs font-bold text-slate-400 uppercase">Chef de Bord</span>
                     <span class="block text-lg font-black text-slate-900">{{ patrouille.chef_de_bord.first_name }} {{ patrouille.chef_de_bord.last_name }}</span>
@@ -22,27 +24,21 @@
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                     <span class="block text-xs font-bold text-slate-400 uppercase">Coéquipier</span>
                     <span class="block text-lg font-black text-slate-900">
-                        {% if patrouille.coequipier %}
-                            {{ patrouille.coequipier.first_name }} {{ patrouille.coequipier.last_name }}
-                        {% else %}
-                            <i>Aucun</i>
-                        {% endif %}
+                        {% if patrouille.coequipier %}{{ patrouille.coequipier.first_name }} {{ patrouille.coequipier.last_name }}{% else %}<i>Aucun</i>{% endif %}
                     </span>
                 </div>
             </div>
             
-            <div class="mt-6">
-                <label class="block text-sm font-bold text-slate-700 mb-2">Type de Mission</label>
-                <div class="flex gap-4">
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="mission_type" value="CCFF" class="peer sr-only" checked>
-                        <div class="bg-white border-2 border-slate-200 rounded-xl p-4 text-center peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-bold transition">Patrouille CCFF</div>
-                    </label>
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="mission_type" value="RCSC" class="peer sr-only">
-                        <div class="bg-white border-2 border-slate-200 rounded-xl p-4 text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 font-bold transition">Mission RCSC</div>
-                    </label>
-                </div>
+            <label class="block text-sm font-bold text-slate-700 mb-2">Type de Mission</label>
+            <div class="flex gap-4">
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="mission_type" value="CCFF" class="peer sr-only" checked>
+                    <div class="bg-white border-2 border-slate-200 rounded-xl p-4 text-center peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:text-brand-700 font-bold transition">Patrouille CCFF</div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="mission_type" value="RCSC" class="peer sr-only">
+                    <div class="bg-white border-2 border-slate-200 rounded-xl p-4 text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 font-bold transition">Mission RCSC</div>
+                </label>
             </div>
         </div>
 
@@ -57,42 +53,43 @@
                 <input type="number" name="km_debut" required placeholder="Ex: 124500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-mono text-lg focus:ring-2 focus:ring-brand-500">
             </div>
 
-            <p class="text-sm font-bold text-slate-500 mb-3">Checklist avant départ :</p>
+            <p class="text-sm font-bold text-slate-500 mb-3">Checklist de sécurité (Cochez pour valider) :</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_huile" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">Niveau d'huile OK</span>
-                </label>
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_eau" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">Niveaux d'eau / LDR OK</span>
-                </label>
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_carburant" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">Plein de carburant fait</span>
-                </label>
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_pneus" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">État des pneus OK</span>
-                </label>
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_radio" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">Essai Radio VHF OK</span>
-                </label>
-                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
-                    <input type="checkbox" name="chk_pompe" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
-                    <span class="font-bold text-slate-700">Cuve pleine & Test pompe</span>
-                </label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_huile" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">Niveau d'huile OK</span></label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_eau" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">Niveaux d'eau / LDR</span></label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_carburant" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">Plein de carburant</span></label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_pneus" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">État des pneus OK</span></label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_radio" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">Essai Radio VHF OK</span></label>
+                <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50"><input type="checkbox" name="chk_pompe" class="w-5 h-5 text-brand-600 rounded border-slate-300"><span class="font-bold text-slate-700">Test pompe & Eau Cuve</span></label>
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <button type="submit" class="w-full bg-green-600 text-white font-black py-4 rounded-xl hover:bg-green-700 transition shadow-lg text-xl mt-8">
+            DÉMARRER LA PATROUILLE
+        </button>
+    </form>
+
+
+    {% else %}
+    
+    <div class="bg-slate-50 rounded-3xl p-6 border border-slate-200 shadow-inner mb-8">
+        <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-3">Récapitulatif de Départ</h3>
+        <div class="flex flex-wrap gap-4 text-sm font-bold text-slate-700">
+            <span class="bg-white px-3 py-1 rounded-lg border border-slate-200">Mission : {{ patrouille.get_mission_type_display }}</span>
+            <span class="bg-white px-3 py-1 rounded-lg border border-slate-200">Véhicule : {{ patrouille.vehicule.nom|default:"Vigie" }}</span>
+            <span class="bg-white px-3 py-1 rounded-lg border border-brand-200 text-brand-600">KM Départ : {{ patrouille.km_debut }}</span>
+        </div>
+    </div>
+
+    <form method="POST" class="space-y-8" id="rapportForm">
+        {% csrf_token %}
+        <input type="hidden" name="phase" value="retour"> <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
             <h2 class="text-xl font-black text-brand-600 mb-4 border-b border-slate-100 pb-2 uppercase tracking-widest">3. Fin de Mission</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Kilométrage Retour</label>
-                    <input type="number" name="km_fin" required placeholder="Ex: 124540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-mono text-lg focus:ring-2 focus:ring-brand-500">
+                    <input type="number" name="km_fin" required min="{{ patrouille.km_debut }}" placeholder="Ex: 124540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-mono text-lg focus:ring-2 focus:ring-brand-500">
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Météo rencontrée</label>
@@ -137,106 +134,66 @@
             </div>
 
             <button type="submit" class="w-full bg-brand-500 text-white font-black py-4 rounded-xl hover:bg-brand-600 transition shadow-lg text-xl mt-8">
-                VALIDER ET CLÔTURER
+                VALIDER ET CLÔTURER LA PATROUILLE
             </button>
-            <a href="{% url 'intranet' %}" class="block text-center text-slate-400 font-bold mt-4 hover:text-white">Annuler et revenir</a>
         </div>
     </form>
-</div>
 
-<script>
-    function setupSignature(canvasId, inputId, clearBtnId) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        const input = document.getElementById(inputId);
-        const clearBtn = document.getElementById(clearBtnId);
-        
-        // Ajuster la résolution interne du canvas
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            ctx.strokeStyle = '#0f172a'; // Couleur de l'encre (slate-900)
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        let isDrawing = false;
-
-        function getCoordinates(event) {
-            const rect = canvas.getBoundingClientRect();
-            let clientX, clientY;
-            if (event.touches && event.touches.length > 0) {
-                clientX = event.touches[0].clientX;
-                clientY = event.touches[0].clientY;
-            } else {
-                clientX = event.clientX;
-                clientY = event.clientY;
+    <script>
+        function setupSignature(canvasId, inputId, clearBtnId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const input = document.getElementById(inputId);
+            const clearBtn = document.getElementById(clearBtnId);
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
             }
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            let isDrawing = false;
+            function getCoordinates(event) {
+                const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+                if (event.touches && event.touches.length > 0) {
+                    clientX = event.touches[0].clientX; clientY = event.touches[0].clientY;
+                } else {
+                    clientX = event.clientX; clientY = event.clientY;
+                }
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDrawing(e) { e.preventDefault(); isDrawing = true; const pos = getCoordinates(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); }
+            function draw(e) { if (!isDrawing) return; e.preventDefault(); const pos = getCoordinates(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }
+            function stopDrawing() { if (!isDrawing) return; isDrawing = false; ctx.closePath(); input.value = canvas.toDataURL(); }
+
+            canvas.addEventListener('mousedown', startDrawing); canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing); canvas.addEventListener('mouseout', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawing, {passive: false}); canvas.addEventListener('touchmove', draw, {passive: false}); canvas.addEventListener('touchend', stopDrawing);
+
+            clearBtn.addEventListener('click', () => { ctx.clearRect(0, 0, canvas.width, canvas.height); input.value = ''; });
         }
 
-        function startDrawing(e) {
-            e.preventDefault();
-            isDrawing = true;
-            const pos = getCoordinates(e);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const pos = getCoordinates(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-
-        function stopDrawing() {
-            if (!isDrawing) return;
-            isDrawing = false;
-            ctx.closePath();
-            // Sauvegarder l'image dans l'input caché
-            input.value = canvas.toDataURL();
-        }
-
-        // Événements Souris
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-
-        // Événements Tactiles (Smartphones)
-        canvas.addEventListener('touchstart', startDrawing, {passive: false});
-        canvas.addEventListener('touchmove', draw, {passive: false});
-        canvas.addEventListener('touchend', stopDrawing);
-
-        // Bouton Effacer
-        clearBtn.addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            input.value = '';
+        document.addEventListener("DOMContentLoaded", () => {
+            setupSignature('canvasChef', 'inputChef', 'clearChef');
+            setupSignature('canvasCoeq', 'inputCoeq', 'clearCoeq');
         });
-    }
 
-    // Initialiser les deux zones de signature au chargement
-    document.addEventListener("DOMContentLoaded", () => {
-        setupSignature('canvasChef', 'inputChef', 'clearChef');
-        setupSignature('canvasCoeq', 'inputCoeq', 'clearCoeq');
-    });
-
-    // Sécurité : obliger à signer avant de soumettre
-    document.getElementById('rapportForm').addEventListener('submit', function(e) {
-        if (!document.getElementById('inputChef').value) {
-            e.preventDefault();
-            alert("La signature du Chef de Bord est obligatoire.");
-        }
-    });
-</script>
+        document.getElementById('rapportForm').addEventListener('submit', function(e) {
+            if (!document.getElementById('inputChef').value) {
+                e.preventDefault();
+                alert("La signature du Chef de Bord est obligatoire.");
+            }
+        });
+    </script>
+    {% endif %}
+    <a href="{% url 'intranet' %}" class="block text-center text-slate-500 font-bold mt-8 hover:underline">Retour à l'intranet</a>
+</div>
 {% endblock %}

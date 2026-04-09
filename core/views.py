@@ -236,28 +236,32 @@ def saisir_rapport(request, patrouille_id):
     patrouille = get_object_or_404(Patrouille, id=patrouille_id, chef_de_bord=request.user)
 
     if request.method == 'POST':
-        # Données de base
-        patrouille.mission_type = request.POST.get('mission_type')
-        patrouille.km_debut = request.POST.get('km_debut')
-        patrouille.km_fin = request.POST.get('km_fin')
-        patrouille.meteo = request.POST.get('meteo')
-        patrouille.rapport = request.POST.get('rapport')
+        phase = request.POST.get('phase')
         
-        # Checklist (les cases à cocher renvoient 'on' si elles sont cochées)
-        patrouille.chk_huile = request.POST.get('chk_huile') == 'on'
-        patrouille.chk_eau = request.POST.get('chk_eau') == 'on'
-        patrouille.chk_carburant = request.POST.get('chk_carburant') == 'on'
-        patrouille.chk_radio = request.POST.get('chk_radio') == 'on'
-        patrouille.chk_pneus = request.POST.get('chk_pneus') == 'on'
-        patrouille.chk_pompe = request.POST.get('chk_pompe') == 'on'
-
-        # Signatures
-        patrouille.signature_chef = request.POST.get('signature_chef')
-        patrouille.signature_coequipier = request.POST.get('signature_coequipier')
-
-        patrouille.est_terminee = True
-        patrouille.save()
-        messages.success(request, "Rapport de patrouille signé et enregistré !")
+        # --- PHASE 1 : LE DÉPART ---
+        if phase == 'depart':
+            patrouille.mission_type = request.POST.get('mission_type')
+            patrouille.km_debut = request.POST.get('km_debut')
+            patrouille.chk_huile = request.POST.get('chk_huile') == 'on'
+            patrouille.chk_eau = request.POST.get('chk_eau') == 'on'
+            patrouille.chk_carburant = request.POST.get('chk_carburant') == 'on'
+            patrouille.chk_radio = request.POST.get('chk_radio') == 'on'
+            patrouille.chk_pneus = request.POST.get('chk_pneus') == 'on'
+            patrouille.chk_pompe = request.POST.get('chk_pompe') == 'on'
+            patrouille.save()
+            messages.success(request, "Checklist validée. Bonne patrouille !")
+            
+        # --- PHASE 2 : LE RETOUR ---
+        elif phase == 'retour':
+            patrouille.km_fin = request.POST.get('km_fin')
+            patrouille.meteo = request.POST.get('meteo')
+            patrouille.rapport = request.POST.get('rapport')
+            patrouille.signature_chef = request.POST.get('signature_chef')
+            patrouille.signature_coequipier = request.POST.get('signature_coequipier')
+            patrouille.est_terminee = True
+            patrouille.save()
+            messages.success(request, "Patrouille clôturée et rapport signé avec succès !")
+            
         return redirect('intranet')
 
     return render(request, 'rapport.html', {'patrouille': patrouille})
