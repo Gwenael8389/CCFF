@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from core.views import (home, devenir_benevole, contact, mentions_legales, reglementation, 
                         missions, actualites, galerie, soutenir, intranet, planning, 
                         supprimer_patrouille, inscription_patrouille, carte_dfci, 
-                        saisir_rapport, gestion_alerte, archives_rapports, telecharger_pdf)
+                        saisir_rapport, gestion_alerte, archives_rapports, voir_rapport)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,8 +19,8 @@ urlpatterns = [
     path('actualites/', actualites, name='actualites'),
     path('galerie/', galerie, name='galerie'),
     path('intranet/archives/', archives_rapports, name='archives_rapports'),
-    path('intranet/archives/pdf/<int:patrouille_id>/', telecharger_pdf, name='telecharger_pdf'),
-    
+    path('intranet/archives/voir/<int:patrouille_id>/', voir_rapport, name='voir_rapport'),
+
     # Espace Intranet
     path('intranet/', intranet, name='intranet'),
     path('intranet/planning/', planning, name='planning'),

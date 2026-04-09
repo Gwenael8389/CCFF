@@ -308,29 +308,14 @@ def gestion_alerte(request):
         
     return render(request, 'alerte.html')
 
+# On garde uniquement cette vue pour les archives
 @user_passes_test(lambda u: u.is_superuser, login_url='/intranet/')
 def archives_rapports(request):
-    # On récupère toutes les patrouilles terminées
     rapports = Patrouille.objects.filter(est_terminee=True).order_by('-date_patrouille')
     return render(request, 'archives.html', {'rapports': rapports})
 
+# On remplace la génération PDF par une simple vue de consultation
 @user_passes_test(lambda u: u.is_superuser, login_url='/intranet/')
-def telecharger_pdf(request, patrouille_id):
+def voir_rapport(request, patrouille_id):
     patrouille = get_object_or_404(Patrouille, id=patrouille_id, est_terminee=True)
-    
-    # On charge un template HTML spécial pour l'impression
-    template = get_template('pdf_template.html')
-    html = template.render({'patrouille': patrouille})
-    
-    # On crée la réponse PDF
-    response = HttpResponse(content_type='application/pdf')
-    # On donne un joli nom au fichier téléchargé
-    filename = f"Rapport_CCFF_{patrouille.date_patrouille.strftime('%Y%m%d')}.pdf"
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-    
-    # xhtml2pdf fait la magie
-    pisa_status = pisa.CreatePDF(html, dest=response)
-    
-    if pisa_status.err:
-        return HttpResponse('Une erreur est survenue lors de la création du PDF')
-    return response
+    return render(request, 'voir_rapport.html', {'patrouille': patrouille})
