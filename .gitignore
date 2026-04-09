@@ -1,8 +1,5 @@
 venv/
-*.log
 __pycache__/
-.VSCodeCounter/
-*.png
-*.docx
-*.odt
-*.tmp
+db.sqlite3
+.env
+staticfiles/
