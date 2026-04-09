@@ -176,6 +176,75 @@
             </ul>
         </div>
 
+        {% if user.is_staff %}
+        <div class="lg:col-span-3 mt-8">
+            <h2 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Boîte de Réception (Bénévolat & Contact)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
+                    <h3 class="text-lg font-black text-brand-600 mb-4 flex items-center justify-between">
+                        Candidatures Bénévoles
+                        <span class="bg-brand-100 text-brand-600 px-2 py-1 rounded-lg text-xs">{{ candidatures_en_attente.count }}</span>
+                    </h3>
+                    <div class="space-y-4">
+                        {% for c in candidatures_en_attente %}
+                        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-slate-900">{{ c.prenom }} {{ c.nom }}</span>
+                                <span class="text-xs font-bold text-slate-400">{{ c.date_candidature|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="text-sm text-slate-600 mb-3 line-clamp-3 italic">"{{ c.message }}"</div>
+                            <div class="flex flex-col sm:flex-row gap-3 justify-between items-center text-sm border-t border-slate-200 pt-3">
+                                <div class="text-slate-500">
+                                    <div class="font-bold text-slate-700">{{ c.telephone }}</div>
+                                    <div><a href="mailto:{{ c.email }}" class="text-brand-500 hover:underline">{{ c.email }}</a></div>
+                                </div>
+                                <a href="{% url 'traiter_demande' 'candidature' c.id %}" class="bg-slate-200 hover:bg-green-100 text-slate-700 hover:text-green-700 px-4 py-2 rounded-xl font-bold transition whitespace-nowrap">
+                                    ✔ Traité
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-slate-500 italic text-sm text-center py-4">Aucune nouvelle candidature.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
+                    <h3 class="text-lg font-black text-blue-600 mb-4 flex items-center justify-between">
+                        Messages Publics
+                        <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-xs">{{ messages_en_attente.count }}</span>
+                    </h3>
+                    <div class="space-y-4">
+                        {% for m in messages_en_attente %}
+                        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-slate-900">{{ m.sujet }}</span>
+                                <span class="text-xs font-bold text-slate-400">{{ m.date_envoi|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="text-sm text-slate-600 mb-3 italic">"{{ m.message }}"</div>
+                            <div class="flex flex-col sm:flex-row gap-3 justify-between items-center text-sm border-t border-slate-200 pt-3">
+                                <div class="text-slate-500">
+                                    <span class="font-bold">{{ m.nom }}</span> - 
+                                    <a href="mailto:{{ m.email }}" class="text-blue-500 hover:underline">{{ m.email }}</a>
+                                </div>
+                                <a href="{% url 'traiter_demande' 'contact' m.id %}" class="bg-slate-200 hover:bg-green-100 text-slate-700 hover:text-green-700 px-4 py-2 rounded-xl font-bold transition whitespace-nowrap">
+                                    ✔ Répondu
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-slate-500 italic text-sm text-center py-4">Aucun nouveau message.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}

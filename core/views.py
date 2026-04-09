@@ -81,8 +81,13 @@ def actualites(request):
     return render(request, 'actualites.html', {'actus': toutes_les_actus})
 
 def galerie(request):
-    photos = PhotoGalerie.objects.all().order_by('-date_ajout')
-    return render(request, 'galerie.html', {'photos': photos})
+    dossiers = DossierGalerie.objects.prefetch_related('photos').all()
+    photos_sans_dossier = PhotoGalerie.objects.filter(dossier__isnull=True).order_by('-date_ajout')
+    
+    return render(request, 'galerie.html', {
+        'dossiers': dossiers, 
+        'photos_sans_dossier': photos_sans_dossier
+    })
 
 def soutenir(request):
     return render(request, 'soutenir.html')
@@ -129,16 +134,25 @@ def intranet(request):
     alerte_active = Alerte.objects.filter(est_active=True).first()
     rapports_en_attente = Patrouille.objects.filter(chef_de_bord=user, est_terminee=False, date_patrouille__lte=date.today()).order_by('date_patrouille')
 
+    # Récupération de la boîte de réception pour le bureau
+    candidatures_en_attente = []
+    messages_en_attente = []
+    if user.is_staff:
+        candidatures_en_attente = Candidature.objects.filter(est_traite=False).order_by('-date_candidature')
+        messages_en_attente = MessageContact.objects.filter(est_traite=False).order_by('-date_envoi')
+
     context = {
         'nb_mes_patrouilles': nb_mes_patrouilles,
-        'mes_heures': mes_heures, # NOUVEAU
+        'mes_heures': mes_heures,
         'total_patrouilles_ccff': total_patrouilles_ccff,
-        'heures_globales_ccff': heures_globales_ccff, # NOUVEAU
+        'heures_globales_ccff': heures_globales_ccff,
         'prochaine_patrouille': prochaine_patrouille,
         'documents': documents,
         'annee_en_cours': annee_en_cours,
         'alerte_active': alerte_active,
         'rapports_en_attente': rapports_en_attente,
+        'candidatures_en_attente': candidatures_en_attente,
+        'messages_en_attente': messages_en_attente,
     }
     return render(request, 'intranet.html', context)
 
@@ -483,3 +497,23 @@ def gestion_vestiaire(request):
         'dotations_en_cours': dotations_en_cours,
         'a_remplacer': a_remplacer,
     })
+
+@login_required(login_url='/connexion/')
+def traiter_demande(request, type_demande, demande_id):
+    if not request.user.is_staff:
+        return redirect('intranet')
+
+    if type_demande == 'candidature':
+        demande = get_object_or_404(Candidature, id=demande_id)
+        message_succes = f"La candidature de {demande.prenom} {demande.nom} a été archivée."
+    elif type_demande == 'contact':
+        demande = get_object_or_404(MessageContact, id=demande_id)
+        message_succes = f"Le message de {demande.nom} a été archivé."
+    else:
+        return redirect('intranet')
+
+    demande.est_traite = True
+    demande.save()
+    messages.success(request, message_succes)
+    
+    return redirect('intranet')

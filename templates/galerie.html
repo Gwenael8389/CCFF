@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Galerie Photos | CCFF Besse-sur-Issole{% endblock %}
 
 {% block content %}
@@ -9,17 +8,46 @@
         <p class="text-lg text-slate-600">Nos bénévoles en action sur le terrain et en formation.</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for photo in photos %}
-        <div class="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 aspect-square border border-slate-100">
-            <img src="{{ photo.image.url }}" alt="{{ photo.titre }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span class="text-white font-bold text-sm">{{ photo.titre }}</span>
+    {% for dossier in dossiers %}
+        {% if dossier.photos.all %}
+        <div class="mb-12">
+            <h2 class="text-2xl font-black text-brand-600 mb-6 border-b border-slate-200 pb-2 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                {{ dossier.nom }}
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for photo in dossier.photos.all %}
+                <div class="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 aspect-square border border-slate-100">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.titre }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <span class="text-white font-bold text-sm">{{ photo.titre }}</span>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        {% empty %}
-        <div class="col-span-full text-center py-12 text-slate-500 italic">La galerie est en cours de construction.</div>
-        {% endfor %}
-    </div>
+        {% endif %}
+    {% endfor %}
+
+    {% if photos_sans_dossier %}
+        <div class="mb-12">
+            <h2 class="text-2xl font-black text-slate-600 mb-6 border-b border-slate-200 pb-2">Autres photos</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for photo in photos_sans_dossier %}
+                <div class="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 aspect-square border border-slate-100">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.titre }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <span class="text-white font-bold text-sm">{{ photo.titre }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not dossiers and not photos_sans_dossier %}
+        <div class="text-center py-12 text-slate-500 italic">La galerie est en cours de construction.</div>
+    {% endif %}
+
 </div>
 {% endblock %}

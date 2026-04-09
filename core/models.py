@@ -52,6 +52,7 @@ class Candidature(models.Model):
     telephone = models.CharField(max_length=20)
     message = models.TextField()
     date_candidature = models.DateTimeField(auto_now_add=True)
+    est_traite = models.BooleanField(default=False, help_text="Cocher quand la candidature a été traitée")
 
     def __str__(self):
         return f"Candidature de {self.prenom} {self.nom}"
@@ -62,6 +63,7 @@ class MessageContact(models.Model):
     sujet = models.CharField(max_length=200)
     message = models.TextField()
     date_envoi = models.DateTimeField(auto_now_add=True)
+    est_traite = models.BooleanField(default=False, help_text="Cocher quand une réponse a été apportée")
 
     def __str__(self):
         return f"Message de {self.nom} - {self.sujet}"
