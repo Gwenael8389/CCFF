@@ -66,9 +66,22 @@ class MessageContact(models.Model):
     def __str__(self):
         return f"Message de {self.nom} - {self.sujet}"
     
+class DossierGalerie(models.Model):
+    nom = models.CharField(max_length=100, unique=True, help_text="Nom du dossier (ex: Formation SDIS 2024)")
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Dossier Galerie"
+        verbose_name_plural = "Dossiers Galerie"
+        ordering = ['-date_creation']
+
+    def __str__(self):
+        return self.nom
+
 class PhotoGalerie(models.Model):
-    titre = models.CharField(max_length=100, help_text="Ex: Formation avec le SDIS")
+    titre = models.CharField(max_length=100, help_text="Légende de la photo")
     image = models.ImageField(upload_to='galerie/')
+    dossier = models.ForeignKey(DossierGalerie, on_delete=models.SET_NULL, null=True, blank=True, related_name='photos')
     date_ajout = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -26,7 +26,9 @@
             <div class="p-8 flex flex-col flex-grow">
                 <div class="text-xs font-bold text-brand-500 uppercase tracking-widest mb-3">{{ actu.date_publication|date:"l d F Y" }}</div>
                 <h2 class="text-xl font-black text-slate-900 mb-4">{{ actu.titre }}</h2>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">{{ actu.contenu|linebreaksbr }}</p>
+                <div class="text-slate-600 text-sm leading-relaxed mb-6 flex-grow prose prose-slate">
+                    {{ actu.contenu|safe }}
+                </div>
             </div>
         </article>
         {% empty %}

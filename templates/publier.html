@@ -24,10 +24,44 @@
             <form method="POST" enctype="multipart/form-data" class="space-y-4">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="photo">
-                {{ form_photo.as_p }}
-                <button type="submit" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg">Ajouter la photo</button>
+                
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-1">1. Choisissez un dossier existant...</label>
+                    {{ form_photo.dossier }}
+                </div>
+                <div class="flex items-center gap-4 my-2">
+                    <div class="h-px bg-slate-700 flex-1"></div>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">OU</span>
+                    <div class="h-px bg-slate-700 flex-1"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-blue-400 mb-1">2. Créez un nouveau dossier</label>
+                    {{ form_photo.nouveau_dossier }}
+                </div>
+                
+                <div class="pt-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-1">Photo et Légende</label>
+                    {{ form_photo.titre }}
+                </div>
+                <div class="pb-4">
+                    {{ form_photo.image }}
+                </div>
+                
+                <button type="submit" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-blue-500 transition">Ajouter la photo</button>
             </form>
         </div>
     </div>
 </div>
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#tinymce-editor', // Cible le textarea de notre formulaire
+    language: 'fr_FR',
+    plugins: 'lists link image preview textcolor colorpicker table',
+    toolbar: 'undo redo | formatselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | image link',
+    menubar: false,
+    height: 400,
+    content_style: "body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont; font-size: 16px; }"
+  });
+</script>
 {% endblock %}

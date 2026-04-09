@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, DossierGalerie, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, Alerte, AbonneNewsletter, SignalementMateriel
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import date, datetime, timedelta
 from django.utils import timezone
@@ -414,7 +414,17 @@ def publier_contenu(request):
         elif action == 'photo':
             form_photo = PhotoForm(request.POST, request.FILES)
             if form_photo.is_valid():
-                form_photo.save()
+                # On met le save en pause avec commit=False
+                photo = form_photo.save(commit=False)
+                nouveau_dossier_nom = form_photo.cleaned_data.get('nouveau_dossier')
+
+                # Si l'utilisateur a tapé un nom dans "Nouveau Dossier"
+                if nouveau_dossier_nom:
+                    # On crée le dossier (ou on le récupère s'il existe déjà avec ce nom exact)
+                    dossier, created = DossierGalerie.objects.get_or_create(nom=nouveau_dossier_nom)
+                    photo.dossier = dossier # On associe la photo à ce dossier
+
+                photo.save() # On sauvegarde la photo pour de bon
                 messages.success(request, "Photo ajoutée à la galerie !")
                 return redirect('galerie')
 
