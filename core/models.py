@@ -99,3 +99,21 @@ class DocumentIntranet(models.Model):
 
     def __str__(self):
         return f"[{self.get_categorie_display()}] {self.titre}"
+    
+class Patrouille(models.Model):
+    TYPES = [
+        ('MOBILE', 'Patrouille Mobile (4x4)'),
+        ('VIGIE', 'Point de Vigie'),
+    ]
+    date_patrouille = models.DateField()
+    heure_debut = models.TimeField()
+    heure_fin = models.TimeField()
+    type_patrouille = models.CharField(max_length=20, choices=TYPES, default='MOBILE')
+    
+    # On relie la patrouille aux utilisateurs (bénévoles) de Django
+    benevoles = models.ManyToManyField(User, related_name='patrouilles')
+    
+    rapport = models.TextField(blank=True, null=True, help_text="RAS ou incidents à signaler")
+
+    def __str__(self):
+        return f"{self.get_type_patrouille_display()} du {self.date_patrouille.strftime('%d/%m/%Y')}"

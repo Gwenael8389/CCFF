@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille
 
 admin.site.register(Actualite)
 admin.site.register(Materiel)
@@ -9,3 +9,4 @@ admin.site.register(MessageContact)
 admin.site.register(PhotoGalerie)
 admin.site.register(MembreEquipe)
 admin.site.register(DocumentIntranet)
+admin.site.register(Patrouille)

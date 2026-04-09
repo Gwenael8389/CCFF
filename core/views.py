@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -81,5 +82,27 @@ def soutenir(request):
 
 @login_required(login_url='/connexion/')
 def intranet(request):
+    user = request.user
+    annee_en_cours = date.today().year
+
+    # 1. Stats personnelles du bénévole
+    mes_patrouilles = user.patrouilles.filter(date_patrouille__year=annee_en_cours)
+    nb_mes_patrouilles = mes_patrouilles.count()
+
+    # 2. Trouver sa prochaine patrouille (date >= aujourd'hui)
+    prochaine_patrouille = user.patrouilles.filter(date_patrouille__gte=date.today()).order_by('date_patrouille').first()
+
+    # 3. Stats globales de l'association (pour l'esprit d'équipe)
+    total_patrouilles_ccff = Patrouille.objects.filter(date_patrouille__year=annee_en_cours).count()
+
+    # 4. Les documents (qu'on avait déjà)
     documents = DocumentIntranet.objects.all().order_by('-date_ajout')
-    return render(request, 'intranet.html', {'documents': documents})
+
+    context = {
+        'nb_mes_patrouilles': nb_mes_patrouilles,
+        'prochaine_patrouille': prochaine_patrouille,
+        'total_patrouilles_ccff': total_patrouilles_ccff,
+        'documents': documents,
+        'annee_en_cours': annee_en_cours,
+    }
+    return render(request, 'intranet.html', context)
