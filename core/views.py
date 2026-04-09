@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, User
+from .models import Actualite, Materiel, RisqueIncendie, Candidature, MessageContact, PhotoGalerie, MembreEquipe, DocumentIntranet, Patrouille, User, Alerte
 from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.utils import timezone
 from django.db.models import Q
 import calendar
+from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -96,12 +98,22 @@ def intranet(request):
     total_patrouilles_ccff = Patrouille.objects.filter(date_patrouille__year=annee_en_cours).count()
     documents = DocumentIntranet.objects.all().order_by('-date_ajout')
 
+    alerte_active = Alerte.objects.filter(est_active=True).first()
+
+    rapports_en_attente = Patrouille.objects.filter(
+        chef_de_bord=user, 
+        est_terminee=False, 
+        date_patrouille__lte=date.today()
+    ).order_by('date_patrouille')
+
     context = {
         'nb_mes_patrouilles': nb_mes_patrouilles,
         'prochaine_patrouille': prochaine_patrouille,
         'total_patrouilles_ccff': total_patrouilles_ccff,
         'documents': documents,
         'annee_en_cours': annee_en_cours,
+        'alerte_active': alerte_active,
+        'rapports_en_attente': rapports_en_attente,
     }
     return render(request, 'intranet.html', context)
 
@@ -191,17 +203,19 @@ def planning(request):
 
 @login_required(login_url='/connexion/')
 def inscription_patrouille(request, patrouille_id):
-    # Cette vue ne renvoie pas de page HTML, elle fait l'action puis redirige
     patrouille = get_object_or_404(Patrouille, id=patrouille_id)
     
-    if request.user in patrouille.benevoles.all():
-        # Si le bénévole est déjà dedans, on le retire
-        patrouille.benevoles.remove(request.user)
-        messages.success(request, f"Vous êtes désinscrit de la patrouille du {patrouille.date_patrouille.strftime('%d/%m')}.")
+    # CORRECTION DU SYSTÈME D'INSCRIPTION COÉQUIPIER
+    if patrouille.coequipier == request.user:
+        patrouille.coequipier = None
+        patrouille.save()
+        messages.success(request, "Vous vous êtes désinscrit de cette patrouille.")
+    elif patrouille.coequipier is None and patrouille.chef_de_bord != request.user:
+        patrouille.coequipier = request.user
+        patrouille.save()
+        messages.success(request, "Vous êtes inscrit comme coéquipier !")
     else:
-        # Sinon on l'ajoute
-        patrouille.benevoles.add(request.user)
-        messages.success(request, f"Vous êtes inscrit à la patrouille du {patrouille.date_patrouille.strftime('%d/%m')} !")
+        messages.error(request, "Impossible de modifier cette inscription.")
         
     return redirect('planning')
 
@@ -216,3 +230,73 @@ def supprimer_patrouille(request, patrouille_id):
         patrouille.delete()
         messages.success(request, "La patrouille a été annulée.")
     return redirect('planning')
+
+@login_required(login_url='/connexion/')
+def saisir_rapport(request, patrouille_id):
+    patrouille = get_object_or_404(Patrouille, id=patrouille_id, chef_de_bord=request.user)
+
+    if request.method == 'POST':
+        # Données de base
+        patrouille.mission_type = request.POST.get('mission_type')
+        patrouille.km_debut = request.POST.get('km_debut')
+        patrouille.km_fin = request.POST.get('km_fin')
+        patrouille.meteo = request.POST.get('meteo')
+        patrouille.rapport = request.POST.get('rapport')
+        
+        # Checklist (les cases à cocher renvoient 'on' si elles sont cochées)
+        patrouille.chk_huile = request.POST.get('chk_huile') == 'on'
+        patrouille.chk_eau = request.POST.get('chk_eau') == 'on'
+        patrouille.chk_carburant = request.POST.get('chk_carburant') == 'on'
+        patrouille.chk_radio = request.POST.get('chk_radio') == 'on'
+        patrouille.chk_pneus = request.POST.get('chk_pneus') == 'on'
+        patrouille.chk_pompe = request.POST.get('chk_pompe') == 'on'
+
+        # Signatures
+        patrouille.signature_chef = request.POST.get('signature_chef')
+        patrouille.signature_coequipier = request.POST.get('signature_coequipier')
+
+        patrouille.est_terminee = True
+        patrouille.save()
+        messages.success(request, "Rapport de patrouille signé et enregistré !")
+        return redirect('intranet')
+
+    return render(request, 'rapport.html', {'patrouille': patrouille})
+
+@login_required(login_url='/connexion/')
+def gestion_alerte(request):
+    # Seul le staff (bureau/président) peut gérer les alertes
+    if not request.user.is_staff:
+        return redirect('intranet')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'lancer':
+            titre = request.POST.get('titre')
+            message = request.POST.get('message')
+            
+            # 1. On crée l'alerte en base de données
+            nouvelle_alerte = Alerte.objects.create(titre=titre, message=message, auteur=request.user)
+            
+            # 2. On envoie un email à tous les bénévoles actifs
+            emails_benevoles = list(User.objects.filter(is_active=True).values_list('email', flat=True))
+            emails_valides = [email for email in emails_benevoles if email] # On retire les champs vides
+            
+            if emails_valides:
+                send_mail(
+                    subject=f"🚨 ALERTE CCFF: {titre}",
+                    message=f"Alerte déclenchée par {request.user.first_name}.\n\nMessage : {message}\n\nConnectez-vous sur l'intranet pour plus d'infos.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=emails_valides,
+                    fail_silently=True, # Si l'email échoue (pas de SMTP configuré), ça ne fait pas planter le site
+                )
+            
+            messages.success(request, "Alerte générale déclenchée et emails envoyés !")
+            
+        elif action == 'stopper':
+            Alerte.objects.filter(est_active=True).update(est_active=False)
+            messages.success(request, "L'alerte a été désactivée.")
+            
+        return redirect('intranet')
+        
+    return render(request, 'alerte.html')

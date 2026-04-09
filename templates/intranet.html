@@ -10,6 +10,36 @@
             <div class="w-16 h-16 bg-brand-500 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-lg uppercase">
                 {{ user.username|make_list|first }}
             </div>
+            {% if alerte_active %}
+            <div class="bg-red-600 rounded-3xl p-6 md:p-8 mb-10 shadow-2xl relative overflow-hidden animate-pulse-slow">
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                    <div class="bg-white text-red-600 w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/></svg>
+                    </div>
+                    <div class="text-white">
+                        <h2 class="text-2xl font-black mb-2">{{ alerte_active.titre }}</h2>
+                        <p class="text-red-100 font-bold text-lg">{{ alerte_active.message }}</p>
+                        <p class="text-sm mt-4 opacity-80">Alerte déclenchée par {{ alerte_active.auteur.first_name }} le {{ alerte_active.date_lancement|date:"d/m à H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if rapports_en_attente %}
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-2xl mb-10 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="text-orange-800 font-black text-lg">Rapports en attente !</h3>
+                    <p class="text-orange-700 text-sm">En tant que chef de bord, vous devez clôturer les patrouilles terminées.</p>
+                </div>
+                <div class="flex flex-col gap-2 w-full sm:w-auto">
+                    {% for p in rapports_en_attente %}
+                        <a href="{% url 'saisir_rapport' p.id %}" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-xl text-sm transition text-center shadow-md">
+                            Rapport du {{ p.date_patrouille|date:"d/m" }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
             <div>
                 <h1 class="text-3xl font-black text-slate-900 leading-tight">Bonjour, {{ user.first_name|default:user.username }}</h1>
                 <p class="text-slate-500 font-bold uppercase tracking-widest text-sm">Saison estivale {{ annee_en_cours }}</p>

@@ -106,6 +106,17 @@ class Patrouille(models.Model):
         ('MOBILE', 'Patrouille Mobile (4x4)'),
         ('VIGIE', 'Point de Vigie'),
     ]
+    MISSION_CHOICES = [
+        ('CCFF', 'Mission CCFF (Communale)'),
+        ('RCSC', 'Mission RCSC (Réserve Civile)'),
+    ]
+    METEO_CHOICES = [
+        ('NORMAL', 'Temps calme / Dégagé'),
+        ('VENT', 'Mistral / Vent fort'),
+        ('CANICULE', 'Forte chaleur'),
+        ('ORAGE', 'Risque Orageux'),
+    ]
+
     date_patrouille = models.DateField()
     heure_debut = models.TimeField()
     heure_fin = models.TimeField()
@@ -115,10 +126,40 @@ class Patrouille(models.Model):
     coequipier = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='patrouilles_assistees')
     vehicule = models.ForeignKey(Materiel, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'categorie': 'VEHICULE'})
     
-    rapport = models.TextField(blank=True, null=True, help_text="RAS ou incidents à signaler")
+    # NOUVEAU : Type de mission
+    mission_type = models.CharField(max_length=10, choices=MISSION_CHOICES, default='CCFF')
+
+    # NOUVEAU : Checklist de départ
+    chk_huile = models.BooleanField(default=False, verbose_name="Niveau d'huile")
+    chk_eau = models.BooleanField(default=False, verbose_name="Niveau d'eau / LDR")
+    chk_carburant = models.BooleanField(default=False, verbose_name="Plein de carburant")
+    chk_radio = models.BooleanField(default=False, verbose_name="Essai Radio VHF")
+    chk_pneus = models.BooleanField(default=False, verbose_name="État des pneus")
+    chk_pompe = models.BooleanField(default=False, verbose_name="Test motopompe / Eau cuve")
+
+    # Données de fin
+    meteo = models.CharField(max_length=50, choices=METEO_CHOICES, blank=True, null=True)
+    km_debut = models.PositiveIntegerField(blank=True, null=True)
+    km_fin = models.PositiveIntegerField(blank=True, null=True)
+    rapport = models.TextField(blank=True, null=True, help_text="Main courante / incidents")
+    est_terminee = models.BooleanField(default=False)
+
+    # NOUVEAU : Signatures numériques (Texte long pour l'image Base64)
+    signature_chef = models.TextField(blank=True, null=True)
+    signature_coequipier = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ['date_patrouille', 'heure_debut']
 
     def __str__(self):
         return f"{self.get_type_patrouille_display()} du {self.date_patrouille.strftime('%d/%m/%Y')} - Chef: {self.chef_de_bord.username}"
+
+class Alerte(models.Model):
+    titre = models.CharField(max_length=100, help_text="Ex: DEPART DE FEU - MASSIF NORD")
+    message = models.TextField(help_text="Instructions pour les bénévoles")
+    est_active = models.BooleanField(default=True)
+    date_lancement = models.DateTimeField(auto_now_add=True)
+    auteur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"[{'ACTIVE' if self.est_active else 'FIN'}] {self.titre}"
