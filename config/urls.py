@@ -42,6 +42,7 @@ urlpatterns = [
     path('mot-de-passe-oublie/', auth_views.PasswordResetView.as_view(
         template_name='password_reset.html',
         email_template_name='password_reset_email.html',
+        html_email_template_name='password_reset_email.html',
         subject_template_name='password_reset_subject.txt'
     ), name='password_reset'),
     
