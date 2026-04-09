@@ -164,9 +164,6 @@ class Patrouille(models.Model):
     signature_chef = models.TextField(blank=True, null=True)
     signature_coequipier = models.TextField(blank=True, null=True)
     
-    # À ajouter dans la classe Patrouille
-    rapport_pdf = models.FileField(upload_to='rapports_pdf/', blank=True, null=True, storage=RawMediaCloudinaryStorage())
-    
     class Meta:
         ordering = ['date_patrouille', 'heure_debut']
 

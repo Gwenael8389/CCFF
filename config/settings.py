@@ -155,3 +155,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'  # Redirige vers l'accueil après connexion (pour l'instant)
 LOGOUT_REDIRECT_URL = '/' # Redirige vers l'accueil après déconnexion
+
+# ==========================================
+# CONFIGURATION DES EMAILS (GMAIL SMTP)
+# ==========================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f"CCFF Besse-sur-Issole <{EMAIL_HOST_USER}>"

@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from .forms import ActualiteForm, PhotoForm, DocumentForm
+import os
 
 def home(request):
     nb_benevoles = User.objects.filter(is_active=True).count()
@@ -38,6 +39,15 @@ def devenir_benevole(request):
             telephone=request.POST.get('telephone'),
             message=request.POST.get('message')
         )
+
+        send_mail(
+            "NOUVELLE CANDIDATURE CCFF",
+            f"Une nouvelle personne souhaite rejoindre le CCFF !\nNom: {request.POST.get('prenom')} {request.POST.get('nom')}\nTéléphone: {request.POST.get('telephone')}\n\nConnectez-vous à l'intranet pour traiter sa demande.",
+            settings.DEFAULT_FROM_EMAIL,
+            [os.getenv('EMAIL_HOST_USER')],
+            fail_silently=True,
+        )
+
         # On affiche un petit message de succès et on renvoie à l'accueil
         messages.success(request, "Votre candidature a bien été envoyée ! Nous vous recontacterons vite.")
         return redirect('home')
@@ -52,6 +62,15 @@ def contact(request):
             sujet=request.POST.get('sujet'),
             message=request.POST.get('message')
         )
+
+        send_mail(
+            "NOUVEAU MESSAGE PUBLIC",
+            f"Nouvelle demande de contact !\nNom: {request.POST.get('prenom')} {request.POST.get('nom')}\nTéléphone: {request.POST.get('telephone')}\n\nConnectez-vous à l'intranet pour traiter sa demande.",
+            settings.DEFAULT_FROM_EMAIL,
+            [os.getenv('EMAIL_HOST_USER')],
+            fail_silently=True,
+        )
+
         messages.success(request, "Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.")
         return redirect('contact')
         
