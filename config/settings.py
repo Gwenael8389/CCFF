@@ -166,3 +166,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f"CCFF Besse-sur-Issole <{EMAIL_HOST_USER}>"
+
+# --- AUTORISATION IFRAME POUR L'AGENCE ---
+class AllowAgencyIframeMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if 'X-Frame-Options' in response:
+            del response['X-Frame-Options']
+        response['Content-Security-Policy'] = "frame-ancestors 'self' https://support.studio4242.fr http://localhost:8000"
+        return response
+
+MIDDLEWARE.append('config.settings.AllowAgencyIframeMiddleware') 
