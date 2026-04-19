@@ -179,7 +179,7 @@ class Alerte(models.Model):
 
     def __str__(self):
         return f"[{'ACTIVE' if self.est_active else 'FIN'}] {self.titre}"
-    
+
 class AbonneNewsletter(models.Model):
     email = models.EmailField(unique=True, help_text="Adresse email de l'habitant")
     date_inscription = models.DateTimeField(auto_now_add=True)
